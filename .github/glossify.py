@@ -6,7 +6,7 @@ import re
 
 DOCS_PATH = "Docs"
 G_KEYWORD = r"\\textsuperscript{g}"
-SKIP_LATEX_TAGS = [r"\\section",r"\\subsection",r"\\subsubsection",r"\\paragraph",r"\\includegraphics",r"\\url"]
+SKIP_LATEX_TAGS = [r"\\section",r"\\subsection",r"\\subsubsection",r"\\paragraph",r"\\includegraphics",r"\\url",r"\\includepdf"]
 
 def main(UseThread:bool=False):
     glox_path = path.Path(DOCS_PATH+"/Generali/glossario/01_content.tex")
