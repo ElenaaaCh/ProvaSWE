@@ -5,8 +5,8 @@ import datetime
 import re
 
 DOCS_PATH = "Docs"
-G_KEYWORD = r"\\textsuperscript{g}"
-SKIP_LATEX_TAGS = [r"\\section",r"\\subsection",r"\\subsubsection",r"\\paragraph",r"\\includegraphics",r"\\url",r"\\includepdf"]
+G_KEYWORD = r"\\textsubscript{g}"
+SKIP_LATEX_TAGS = [r"\\section",r"\\subsection",r"\\subsubsection",r"\\paragraph",r"\\includegraphics",r"\\url",r"\\includepdf",r"\\nameref"]
 
 def main(UseThread:bool=False):
     glox_path = path.Path(DOCS_PATH+"/Generali/glossario/01_content.tex")
