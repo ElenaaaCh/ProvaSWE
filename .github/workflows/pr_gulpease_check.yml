@@ -18,10 +18,19 @@ jobs:
           git remote set-branches --add origin main
           git fetch
           changed_files=$(git diff --name-only origin/$GITHUB_BASE_REF | grep '.tex$') || true
-          changed_document=$(echo "$changed_files" | cut -d/ -f1-3 | uniq) 
-          echo "$changed_files"
-          echo "$changed_document"
-          echo "doc=$changed_document" >> $GITHUB_OUTPUT
+          changed_document=$(echo "$changed_files" | cut -d/ -f1-4 | uniq) 
+ 
+          echo "${changed_document[*]}"
+
+          while IFS= read -r line; do
+          document=$(basename "$line")
+          if [[ "$GITHUB_HEAD_REF" == *"$document"* ]]; then
+              c_doc="$line"
+
+          fi
+          done <<< "$changed_document"
+
+          echo "doc=$c_doc" >> $GITHUB_OUTPUT
       - name : Calulate Gulpease index
         id: value
         run: |

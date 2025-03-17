@@ -1,15 +1,16 @@
 * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 :root {
-    --background: #110f0f;
-    --background-alt: #1f1d1d;
+    --background: #121212;
+    --background-alt: #1c1c1cb0;
     --text: #fafafa;
-    --accent: #d10101;
-    --link: #FFAE6A;
-
+    --title:#F5AE73;
+    --accent: #8F0D0D;
+    --accent-secondary:#D38647;
 }
 
 html {
@@ -17,14 +18,23 @@ html {
     color: var(--text);
     font-family: "Kanit", monospace;
     letter-spacing: 1px;
-    padding-top: 1%;
+    scroll-behavior: smooth;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 header,
 main {
-    max-width: 1024px;
-    margin-left: auto;
-    margin-right: auto;
+    padding: 2.5rem;
+    align-content: start;
+}
+
+main {
+    flex: 1;
 }
 
 
@@ -39,24 +49,11 @@ header div {
     text-align: center;
     font-size: 1.9em;
     font-weight: bold;
-    margin-top: 5%;
-    margin-bottom: 5%;
+    margin-top: 2em;
 }
 
 header span {
     display: block;
-}
-
-
-nav {
-    margin-bottom: 3%;
-    background-color: var(--background-alt);
-    padding: .7em;
-    font-size: 1.5em;
-    position: sticky;
-    top: 0;
-    box-shadow: 0 0 15px rgb(15, 15, 15);
-    z-index: 1;
 }
 
 nav ul {
@@ -71,10 +68,9 @@ nav a {
     color: var(--accent);
 }
 
-
-main h2,
+main #docs div h2,
 main h1 {
-    color: var(--accent);
+    color: var(--title);
     text-align: center;
 }
 
@@ -86,72 +82,225 @@ main h2 {
     font-size: 1.5em;
 }
 
-main h2::before,
-main h1::before {
-    margin-right: 0.5em;
-
+#quicklinks {
+    text-align: center;
+    margin-bottom: 5rem;
 }
 
-main h2::after,
-main h1::after {
-    margin-left: 0.5em;
-
+#quicklinks .btn {
+    padding: 1rem 1.5rem;
+    display: inline-block
 }
 
-#candidatura h1::before,
-#candidatura h1::after {
-    content: "🎓";
-    opacity: .7;
+#quicklinks a:first-child {
+    background-color: var(--text);
+    color: var(--background);
+    margin-right: 4rem;
+}
+#quicklinks a:last-child {
+    background-color: var(--accent);
+    color: var(--text);
+}
+#quicklinks a:before {
+    content: "";
+    width: 1.5rem;
+    height: 1.5rem;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 1rem;
+    
 }
 
-#generali h1::before,
-#generali h1::after {
-    content: "🔧";
-    opacity: .7;
+#quicklinks a:first-child::before {
+    background: url("images/github.png") no-repeat center center;
+    background-size: 100% 100%;
 }
 
-#verbali_ext h2::before,
-#verbali_ext h2::after {
-    content: "📋";
-    opacity: .7;
-
+#quicklinks a:last-child::before {
+    background: url("images/project.png") no-repeat center center;
+    background-size: 100% 100%;
 }
 
-#verbali_int h2::before,
-#verbali_int h2::after {
-    content: "📝";
-    opacity: .7;
+
+main #docs  .expandable input {
+    padding: 0;
+    margin: 0;
+    appearance: none;
+    outline: none;
+    pointer-events: none;
 }
 
-main div {
-    background-color: var(--background-alt);
-    border-radius: 2em;
-    padding: 1em;
+main #docs  .expandable:has(:not(input.rtb:checked)) ~ .content.rtb div, 
+main #docs  .expandable:has(:not(input.rtb:checked)) ~ .content.rtb nav,
+main #docs  .expandable:has(:not(input.pb:checked)) ~ .content.pb div,
+main #docs  .expandable:has(:not(input.pb:checked)) ~ .content.pb nav,
+main #docs  .expandable:has(:not(input.capitolato:checked)) ~ .content.capitolato div,
+main #docs  .expandable:has(:not(input.capitolato:checked)) ~ .content.capitolato nav {
+    transition: opacity .25s,
+                font-size .5s .25s,
+                margin .5s .25s,
+                padding .5s .25s;
+}
+
+main #docs  .expandable:has(input.rtb:checked) ~ .content.rtb div,
+main #docs  .expandable:has(input.rtb:checked) ~ .content.rtb nav,
+main #docs  .expandable:has(input.pb:checked) ~ .content.pb div,
+main #docs  .expandable:has(input.pb:checked) ~ .content.pb nav,
+main #docs  .expandable:has(input.capitolato:checked) ~ .content.capitolato div,
+main #docs  .expandable:has(input.capitolato:checked) ~ .content.capitolato nav {
+    font-size: initial;
+    opacity: initial;
     margin-bottom: 2.5em;
+    padding: 1em;
+    transition: font-size .25s,
+                margin .25s,
+                padding .25s,
+                opacity .5s .25s;
+}
+
+main .section {
+    display: block;
+    width: 100%;
+    letter-spacing: .2em;
+    font-size: 2em;
+    color: var(--text);
+    padding: 1rem 1rem 1rem 0;
+    font-weight: 700;
+    user-select: none;
+    border-bottom: 5px var(--accent) solid;
+    position: relative;
+    margin: 1em auto 0;
+}
+
+main .expandable {
+    cursor: pointer;
+}
+
+main .expandable:hover:after{
+    content:'';
+    float: right;
+    width: 45px;
+    height: 45px;
+    background-image: url(images/image.png);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    transform-origin: center;
+    animation: hand 1s ease-in-out infinite;
+    position: absolute;
+    right: 0;
+    bottom: 20px;
+
+}
+
+main #docs  a {
+    position: relative;
+    white-space: nowrap;
+}
+
+main a:hover {
+    text-decoration: underline;
+}
+
+main a.anim:hover:after{
+    content:'';
+    display: inline-block;
+    width: 25px;
+    height: 25px;
+    background-image: url(images/image.png);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    transform-origin: center;
+    animation: hand 1s ease-in-out infinite;
+    position: absolute;
+    right: -30px;
+    bottom: 13px;
+}
+
+@keyframes hand {
+    0% {
+        transform: rotate(-30deg);
+    }
+    50% {
+        transform: rotate(15deg);
+    }
+    70% {
+        transform: rotate(-50deg);
+    }
+    90%,100%{
+        transform: rotate(-30deg);
+    }
+}
+
+main .content {
+    padding: 0em 1em;
+    overflow: hidden;
+}
+
+.center {
+    max-width: 1024px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+main .content nav{
+    font-size: 0;
+    margin: 0;
+    opacity: 0;
+    padding: 0;
+}
+
+main #docs .content div {
+    background-color: var(--background-alt);
+    border-radius: 5px;
     scroll-margin-top: 7em;
+    font-size: 0;
+    margin: 0;
+    opacity: 0;
+    padding: 0;
 }
 
 main ul {
     font-size: 1.15em;
-    padding-left: 4em;
-    padding-right: 4em;
-    margin-top: 2%;
-    margin-bottom: 2%;
+    padding-left: 5em;
+    padding-right: 5em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
+.baseline-nav {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.baseline-nav ul{
+    margin: 0;
+}
+
+.baseline-nav ul li {
+    list-style-type: none;
+}
+
+.baseline-nav ul li::marker {
+    content: "";
+}
+
+.baseline-nav ul li a {
+    color: white;
+    text-decoration: underline;
 }
 
 
 li {
     margin-bottom: .6em;
     margin-top: .5em;
-    margin-left: 2em;
-    margin-right: 2em;
 }
 
 li span {
     font-weight: bolder;
     color: white;
     letter-spacing: 2px;
-    padding-left: 3%;
     float: inline-end;
 }
 
@@ -174,21 +323,46 @@ a {
 }
 
 main a {
-    color: var(--link);
+    color: var(--accent-secondary);
 }
 
-main a:hover {
-    color: var(--text);
-    background-color: var(--link);
-}
 
 nav a:hover {
     color: var(--text);
     background-color: var(--accent);
 }
 
+#docs {
+    margin-bottom: 5rem;
+}
+
+#who h2 {
+    font-size: 2.3rem;
+    margin-bottom: 3rem;
+}
+
+#who {
+    text-align: center;
+}
+
+#members {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    justify-content: center;
+    row-gap: 5rem;
+    column-gap: 2rem;
+}
+#members a {
+    font-size: .8rem;
+}
+
+.member img {
+    width: 9rem;
+    height: 9rem;
+    border-radius: 50%;
+}
+
 footer {
-    margin-top: 3%;
     text-align: center;
     background-color: var(--background-alt);
 }
@@ -198,25 +372,34 @@ footer p {
     font-style: italic;
 }
 
-@media screen and (prefers-color-scheme: light) {
-    :root {
-        --background: #fafafa;
-        --background-alt: #bababa;
-        --text: #110f0f;
-        --accent: rgb(179, 1, 7);
-        --link: rgb(143, 0, 4);
+@media screen and (max-width:900px) {
+    #members {
+        grid-template-columns: repeat(2,1fr);
     }
+}
 
-    li span {
-        color: var(--text);
-    }
 
-    a:hover {
-        color: var(--background);
-    }
+@media screen and (max-width:570px) {
 
     header h1 {
-        background: url(images/logo-inline.svg) no-repeat center center;
+        background: url(images/logo-block-white.svg) no-repeat center center;
+    }
+    main ul {
+        padding: 0 1rem;
+    }
+    li {
+        text-align: center;
+        list-style-position: inside;
+        margin-left: 0;
+        margin-right: 0;
+    }
+    li span {
+        display: block;
+        text-align: center;
+        float: none;
     }
 
+    #members {
+        grid-template-columns: repeat(1,1fr);
+    }
 }

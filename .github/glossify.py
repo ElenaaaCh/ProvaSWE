@@ -9,26 +9,29 @@ G_KEYWORD = r"\\textsubscript{g}"
 SKIP_LATEX_TAGS = [r"\\section",r"\\subsection",r"\\subsubsection",r"\\paragraph",r"\\includegraphics",r"\\url",r"\\includepdf",r"\\nameref"]
 
 def main(UseThread:bool=False):
-    glox_path = path.Path(DOCS_PATH+"/Generali/glossario/01_content.tex")
+    glox_path = path.Path(DOCS_PATH+"/PB/Generali Interni/glossario/01_content.tex")
     
     defs = ReadAllWords(glox_path)
 
     if UseThread:
-        with concurrent.futures.ThreadPoolExecutor(3) as pool: # with -> automatically wait for all threads
-            for type in os.listdir(path.Path(DOCS_PATH)):
-                if type == "Candidatura": # skippa la candidatura
-                    continue
-                pool.submit(Apply,defs,type)
+        with concurrent.futures.ThreadPoolExecutor(2) as pool: # with -> automatically wait for all threads
+            for baseline in os.listdir(path.Path(DOCS_PATH)):
+                for type in os.listdir(path.Path(DOCS_PATH+"/"+baseline)):
+                    if type == "Candidatura": # skippa la candidatura
+                        continue
+                    print(type)
+                    pool.submit(Apply,defs,baseline+"/"+type)
     else:
         ApplyAll(defs)
         # print(defs)
 
 
 def ApplyAll(defs:list):
-    for type in os.listdir(path.Path(DOCS_PATH)):
-        if type == "Candidatura":
-            continue
-        Apply(defs, type)
+    for baseline in os.listdir(path.Path(DOCS_PATH)):
+        for type in os.listdir(path.Path(DOCS_PATH+"/"+baseline)):
+            if type == "Candidatura":
+                continue
+            Apply(defs, baseline+"/"+type)
 
 def Apply(defs:list, type:str):
     for doc in os.listdir(path.Path(DOCS_PATH+"/"+type)):

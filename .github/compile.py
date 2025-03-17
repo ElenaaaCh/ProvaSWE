@@ -7,7 +7,7 @@ import logging
 import concurrent.futures
 
 
-TEMPLATE = '<li><a href="{{link}}" target="_blank">{{name}}</a> <span class="tag-versione">{{ver}}</span> </li>'
+TEMPLATE = '<li><a class="anim" href="{{link}}" target="_blank">{{name}}</a> <span class="tag-versione">{{ver}}</span> </li>'
 DOCS_PATH = "Docs"
 
 class PDF:
@@ -29,8 +29,6 @@ class PDF:
             return True
         else:
             return False
-
-
 
 def main(UseThread:bool=False):
     logging.basicConfig(level=os.getenv('LOGLEVEL', 'INFO'))
@@ -54,12 +52,12 @@ def main(UseThread:bool=False):
 
     UpdateHtml(html,pdfs)
 
-
 def BuildAllPDF(init_path:str, pdfs:dict[str, list], command:list[str]):
     logging.info(f'Building tex files')
-    for type in os.listdir(path.Path(DOCS_PATH)):
-        pdfs[type]=[]
-        BuildTypePDF(init_path, pdfs, command, type)
+    for baseline in os.listdir(path.Path(DOCS_PATH)):
+        for type in os.listdir(path.Path(DOCS_PATH+"/"+baseline)):
+            pdfs[baseline+"/"+type]=[]
+            BuildTypePDF(init_path, pdfs, command, baseline+"/"+type)
 
 def BuildTypePDF(init_path:str, pdfs:dict[str, list], command:list[str], type:str):
     for doc in os.listdir(path.Path(DOCS_PATH+"/"+type)):
@@ -75,7 +73,7 @@ def BuildTypePDF(init_path:str, pdfs:dict[str, list], command:list[str], type:st
             logging.error(f"Compiling {doc} failed with stderr: \n{result.stderr}")
             exit(1)
         pdfs[type].append(PDF(doc,ver,use))
-        cmd.move(doc+".pdf",path.Path("../../../_site/"+doc+".pdf"))
+        cmd.move(doc+".pdf",path.Path("../../../../_site/"+doc+".pdf"))
         logging.debug(f"Current dir to {os.getcwd()}")
         logging.debug(f"Changing dir to {path.Path(init_path)}")
         os.chdir(init_path)
@@ -83,21 +81,10 @@ def BuildTypePDF(init_path:str, pdfs:dict[str, list], command:list[str], type:st
 def UpdateHtml(html:str,pdfs:dict[str, list]):
     logging.info(f'Updating the HTML')
     for type in pdfs:
-        if type=="Generali":
-            html = html.replace("{{Generali}}","<h2>Documentazione Interna</h2><ul>{{Generali Interni}}</ul><h2>Documentazione Esterna</h2><ul>{{Generali Esterni}}</ul>")
-            pdfs[type].sort(reverse=True)
-            i = []
-            e = []
-            for pdf in pdfs[type]:
-                if pdf.GetUse() == "Interno":
-                    i.append(MakeLink(pdf))
-                if pdf.GetUse() == "Esterno":
-                    e.append(MakeLink(pdf))
-            html = html.replace("{{Generali Interni}}","\n".join(l for l in i))
-            html = html.replace("{{Generali Esterni}}","\n".join(l for l in e))
-        else:
-            pdfs[type].sort(reverse=True)
-            html = html.replace("{{"+ type +"}}","\n".join(MakeLink(pdf) for pdf in pdfs[type]))
+        pdfs[type].sort(reverse=True)
+        t_doc = type.split("/")[1]+"_"+type.split("/")[0]
+        html = html.replace("{{"+ t_doc +"}}","\n".join(MakeLink(pdf) for pdf in pdfs[type]))
+
     path.Path('_site/index.html').write_text(html)
 
 def GetDocVersion(path:str):
