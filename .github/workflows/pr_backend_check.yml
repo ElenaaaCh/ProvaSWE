@@ -9,7 +9,7 @@ on:
 jobs:
   test-backend:
     runs-on: ubuntu-latest
-    if: ${{ startsWith(github.head_ref, 'code/') }} 
+    if: ${{ (github.event_name == 'pull_request' && startsWith(github.head_ref, 'code/')) || (github.event_name == 'workflow_dispatch' && startsWith(github.ref, 'refs/heads/code/')) }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
