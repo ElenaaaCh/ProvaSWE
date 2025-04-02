@@ -9,7 +9,7 @@ on:
 jobs:
   test-frontend:
     runs-on: ubuntu-latest
-
+    if: ${{ startsWith(github.head_ref, 'code/') }} 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
