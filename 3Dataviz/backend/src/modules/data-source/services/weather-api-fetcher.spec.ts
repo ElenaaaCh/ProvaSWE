@@ -1,3 +1,22 @@
+jest.mock("../config", () => ({
+  WEATHER_API_CONFIG: {
+    START_DATE: "2023-01-01",
+    END_DATE: "2023-01-02",
+    CITIES: [
+      { id: 0, name: "Francoforte", latitude: 0, longitude: 0 },
+      { id: 1, name: "Parigi", latitude: 0, longitude: 0 },
+    ],
+    BASE_URL: "https://api.example.com/weather",
+    LEGEND: {
+      x: "Ore",
+      y: "Temperatura (°C)",
+      z: "Città",
+    },
+  },
+}));
+
+jest.mock("axios");
+
 import { Test, TestingModule } from "@nestjs/testing";
 import { WeatherApiFetcher } from "./weather-api-fetcher";
 import { WEATHER_API_CONFIG } from "../config";
@@ -5,7 +24,6 @@ import { WeatherData } from "./weather-api-fetcher";
 import axios from "axios";
 import { Dataset } from "src/interfaces/dataset.interface";
 
-jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe("DataSourceService", () => {
@@ -30,16 +48,6 @@ describe("DataSourceService", () => {
   });
 
   it("should return the correct size", () => {
-    jest.mock("../config", () => ({
-      WEATHER_API_CONFIG: {
-        START_DATE: "2023-01-01",
-        END_DATE: "2023-01-02",
-        CITIES: [
-          { id: 1, name: "City1", latitude: 0, longitude: 0 },
-          { id: 2, name: "City2", latitude: 0, longitude: 0 },
-        ],
-      },
-    }));
     const size = fetcher.getSize();
     const numberOfDays = 1;
     const expectedSize = [numberOfDays * 24, WEATHER_API_CONFIG.CITIES.length];
@@ -89,13 +97,13 @@ describe("DataSourceService", () => {
           z: 0,
         },
         {
-          id: 1,
+          id: 2,
           x: 1,
           y: 21,
           z: 0,
         },
         {
-          id: 2,
+          id: 1,
           x: 0,
           y: 22,
           z: 1,
@@ -119,14 +127,30 @@ describe("DataSourceService", () => {
   });
 
   it("should throw an error if axios fails", async () => {
-    jest.mock("axios");
-    const mockedAxios = axios as jest.Mocked<typeof axios>;
+    // Simuliamo un errore di rete
     (mockedAxios.get as jest.Mock).mockRejectedValue(
       new Error("Network Error"),
     );
 
     await expect(fetcher.fetchData()).rejects.toThrow(
-      "Errore nel recupero dei dati meteo:Error: Network Error",
+      "Errore nel recupero dei dati meteo: Error: Network Error",
+    );
+  });
+
+  it("should throw an error if data format is invalid", async () => {
+    // Simuliamo una risposta API con formato non valido
+    const mockWeatherData = [
+      {
+        hourly: {
+          time: ["2025-01-01T12:00:00", "2025-01-01T13:00:00"],
+        },
+      },
+    ];
+
+    (mockedAxios.get as jest.Mock).mockResolvedValue({ data: mockWeatherData });
+
+    await expect(fetcher.fetchData()).rejects.toThrow(
+      "Errore nel recupero dei dati meteo: Error: Formato dei dati non valido",
     );
   });
 });

@@ -1,21 +1,23 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
+import { BaseFetcher } from "./base-fetcher";
+
+export type DataSource = {
+  id: number;
+  name: string;
+  size: [number, number];
+  description: string;
+};
 
 @Injectable()
 export class DataSourceService {
+  constructor(@Inject("FETCHERS") private fetchers: BaseFetcher[]) {}
   getSources() {
-    return [
-      {
-        id: 1,
-        name: "Source 1",
-        type: "CSV",
-        description: "A CSV data source",
-      },
-      {
-        id: 2,
-        name: "Source 2",
-        type: "JSON",
-        description: "A JSON data source",
-      },
-    ];
+    const sources: DataSource[] = this.fetchers.map((fetcher, index) => ({
+      id: index,
+      name: fetcher.getName(),
+      size: fetcher.getSize(),
+      description: fetcher.getDescription(),
+    }));
+    return sources;
   }
 }

@@ -17,8 +17,8 @@ describe("DataSourceController", () => {
               {
                 id: 1,
                 name: "Source 1",
-                type: "CSV",
-                description: "A CSV data source",
+                size: [100, 20],
+                description: "A data source",
               },
             ]), // Mock del servizio
           },
@@ -39,8 +39,8 @@ describe("DataSourceController", () => {
       {
         id: 1,
         name: "Source 1",
-        type: "CSV",
-        description: "A CSV data source",
+        size: [100, 20] as [number, number],
+        description: "A data source",
       },
     ];
     jest.spyOn(service, "getSources").mockReturnValue(result);
