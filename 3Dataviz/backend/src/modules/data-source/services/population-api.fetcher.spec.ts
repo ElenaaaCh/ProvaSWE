@@ -1,16 +1,16 @@
 jest.mock("../config", () => ({
-  WEATHER_API_CONFIG: {
-    START_DATE: "2023-01-01",
-    END_DATE: "2023-01-02",
-    CITIES: [
-      { id: 0, name: "Francoforte", latitude: 0, longitude: 0 },
-      { id: 1, name: "Parigi", latitude: 0, longitude: 0 },
+  POPULATION_API_CONFIG: {
+    START_YEAR: 2022,
+    END_YEAR: 2023,
+    COUNTRIES: [
+      { id: 0, name: "Germania", countryCode: "DEU" },
+      { id: 1, name: "Francia", countryCode: "FRA" },
     ],
-    BASE_URL: "https://api.example.com/weather",
+    BASE_URL: "https://api.example.com/population",
     LEGEND: {
-      x: "Ore",
-      y: "Temperatura (°C)",
-      z: "Città",
+      x: "Anno",
+      y: "Popolazione",
+      z: "Paese",
     },
   },
 }));
@@ -18,23 +18,23 @@ jest.mock("../config", () => ({
 jest.mock("axios");
 
 import { Test, TestingModule } from "@nestjs/testing";
-import { WeatherApiFetcher } from "./weather-api-fetcher";
-import { WEATHER_API_CONFIG } from "../config";
-import { WeatherData } from "./weather-api-fetcher";
+import { PopulationApiFetcher } from "./population-api-fetcher";
+import { POPULATION_API_CONFIG } from "../config";
+import { PopulationData } from "./population-api-fetcher";
 import axios from "axios";
 import { Dataset } from "src/interfaces/dataset.interface";
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe("WeatherApiService", () => {
-  let fetcher: WeatherApiFetcher;
+describe("PopulationApiFetcher", () => {
+  let fetcher: PopulationApiFetcher;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [WeatherApiFetcher],
+      providers: [PopulationApiFetcher],
     }).compile();
 
-    fetcher = module.get<WeatherApiFetcher>(WeatherApiFetcher);
+    fetcher = module.get<PopulationApiFetcher>(PopulationApiFetcher);
     mockedAxios.get = jest.fn();
   });
 
@@ -44,40 +44,40 @@ describe("WeatherApiService", () => {
 
   it("should return the correct name", () => {
     const name = fetcher.getName();
-    expect(name).toBe(WEATHER_API_CONFIG.NAME);
+    expect(name).toBe(POPULATION_API_CONFIG.NAME);
   });
 
   it("should return the correct size", () => {
     const size = fetcher.getSize();
-    const numberOfDays = 1;
-    const expectedSize = [numberOfDays * 24, WEATHER_API_CONFIG.CITIES.length];
+    const numberOfYears =
+      POPULATION_API_CONFIG.END_YEAR - POPULATION_API_CONFIG.START_YEAR + 1;
+    const expectedSize = [
+      numberOfYears,
+      POPULATION_API_CONFIG.COUNTRIES.length,
+    ];
     expect(size).toEqual(expectedSize);
   });
 
   it("should return the correct description", () => {
     const description = fetcher.getDescription();
-    expect(description).toBe(WEATHER_API_CONFIG.DESCRIPTION);
+    expect(description).toBe(POPULATION_API_CONFIG.DESCRIPTION);
   });
 
   it("should fetch data and return transformed dataset", async () => {
     // Simuliamo la risposta API con dati fittizi
-    const mockWeatherData: WeatherData[] = [
-      {
-        hourly: {
-          time: ["2025-01-01T12:00:00", "2025-01-01T13:00:00"],
-          temperature_2m: [20, 21],
-        },
-      },
-      {
-        hourly: {
-          time: ["2025-01-01T12:00:00", "2025-01-01T13:00:00"],
-          temperature_2m: [22, 23],
-        },
-      },
+    const mockPopulationData: PopulationData[] = [
+      [
+        { countryiso3code: "FRA", date: "2022", value: 60000000 },
+        { countryiso3code: "DEU", date: "2023", value: 70000000 },
+        { countryiso3code: "DEU", date: "2022", value: 68000000 },
+        { countryiso3code: "FRA", date: "2023", value: 62000000 },
+      ],
     ];
 
     // Simuliamo la risposta di Axios
-    (mockedAxios.get as jest.Mock).mockResolvedValue({ data: mockWeatherData });
+    (mockedAxios.get as jest.Mock).mockResolvedValue({
+      data: mockPopulationData,
+    });
 
     // Chiamata al metodo pubblico fetchData()
     const result = await fetcher.fetchData();
@@ -91,37 +91,37 @@ describe("WeatherApiService", () => {
     const expectedResult: Dataset = {
       data: [
         {
-          id: 0,
+          id: 1,
           x: 0,
-          y: 20,
-          z: 0,
+          y: 60,
+          z: 1,
         },
         {
           id: 2,
           x: 1,
-          y: 21,
+          y: 70,
           z: 0,
         },
         {
-          id: 1,
+          id: 0,
           x: 0,
-          y: 22,
-          z: 1,
+          y: 68,
+          z: 0,
         },
         {
           id: 3,
           x: 1,
-          y: 23,
+          y: 62,
           z: 1,
         },
       ],
       legend: {
-        x: "Ore",
-        y: "Temperatura (°C)",
-        z: "Città",
+        x: "Anno",
+        y: "Popolazione",
+        z: "Paese",
       },
-      xLabels: ["2025-01-01T12:00:00", "2025-01-01T13:00:00"],
-      zLabels: ["Francoforte", "Parigi"],
+      xLabels: ["2022", "2023"],
+      zLabels: ["Germania", "Francia"],
     };
     expect(result).toEqual(expectedResult);
   });
@@ -139,15 +139,11 @@ describe("WeatherApiService", () => {
 
   it("should throw an error if data format is invalid", async () => {
     // Simuliamo una risposta API con formato non valido
-    const mockWeatherData = [
-      {
-        hourly: {
-          time: ["2025-01-01T12:00:00", "2025-01-01T13:00:00"],
-        },
-      },
-    ];
+    const mockPopulationData = [[{ value: 68 }]];
 
-    (mockedAxios.get as jest.Mock).mockResolvedValue({ data: mockWeatherData });
+    (mockedAxios.get as jest.Mock).mockResolvedValue({
+      data: mockPopulationData,
+    });
 
     await expect(fetcher.fetchData()).rejects.toThrow(
       "Errore nel recupero dei dati.\nError: Formato dei dati non valido",

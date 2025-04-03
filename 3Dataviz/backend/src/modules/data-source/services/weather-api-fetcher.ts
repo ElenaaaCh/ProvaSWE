@@ -64,7 +64,7 @@ export class WeatherApiFetcher extends BaseFetcher {
       const dataset = this.transformData(data);
       return dataset;
     } catch (error) {
-      throw new Error("Errore nel recupero dei dati meteo: " + error);
+      throw new Error("Errore nel recupero dei dati.\n" + error);
     }
   }
 
