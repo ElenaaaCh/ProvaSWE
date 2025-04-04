@@ -21,9 +21,9 @@ export class FlightsApiFetcher extends BaseFetcher {
     const endDatetime = startDatetime + 3599;
     const baseUrl = FLIGHTS_API_CONFIG.BASE_URL;
     const url = baseUrl
-      .replace("@airport@", airportCode)
-      .replace("@start_datetime@", startDatetime.toString())
-      .replace("@end_datetime@", endDatetime.toString());
+      .replace("@AIRPORT@", airportCode)
+      .replace("@START_DATETIME@", startDatetime.toString())
+      .replace("@END_DATETIME@", endDatetime.toString());
     return url;
   }
 

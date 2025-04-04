@@ -31,10 +31,10 @@ export class WeatherApiFetcher extends BaseFetcher {
     const endDate = WEATHER_API_CONFIG.END_DATE;
     const baseUrl = WEATHER_API_CONFIG.BASE_URL;
     const url = baseUrl
-      .replace("@latitude@", latitudes)
-      .replace("@longitude@", longitudes)
-      .replace("@start_date@", startDate)
-      .replace("@end_date@", endDate);
+      .replace("@LATITUDE@", latitudes)
+      .replace("@LONGITUDE@", longitudes)
+      .replace("@START_DATE@", startDate)
+      .replace("@END_DATE@", endDate);
     return url;
   }
 

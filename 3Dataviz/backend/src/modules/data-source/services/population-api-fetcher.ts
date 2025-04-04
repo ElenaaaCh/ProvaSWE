@@ -24,9 +24,9 @@ export class PopulationApiFetcher extends BaseFetcher {
     const endYear = POPULATION_API_CONFIG.END_YEAR;
     const baseUrl = POPULATION_API_CONFIG.BASE_URL;
     const url = baseUrl
-      .replace("@country_code@", countryCode)
-      .replace("@start_year@", startYear.toString())
-      .replace("@end_year@", endYear.toString());
+      .replace("@COUNTRY_CODE@", countryCode)
+      .replace("@START_YEAR@", startYear.toString())
+      .replace("@END_YEAR@", endYear.toString());
     return url;
   }
 

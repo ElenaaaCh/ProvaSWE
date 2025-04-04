@@ -1,8 +1,8 @@
 export const WEATHER_API_CONFIG = {
   NAME: "Temperatura oraria",
-  BASE_URL: `https://archive-api.open-meteo.com/v1/archive?latitude=@latitude@&
-  longitude=@longitude@&start_date=@start_date@&end_date=@end_date@&hourly=temp
-  erature_2m`,
+  BASE_URL: `https://archive-api.open-meteo.com/v1/archive?latitude=@LATITUDE@
+  &longitude=@LONGITUDE@&start_date=@START_DATE@&end_date=@END_DATE@
+  &hourly=temperature_2m`,
   START_DATE: "2025-01-01",
   END_DATE: "2025-03-31",
   CITIES: [
@@ -42,8 +42,8 @@ export const WEATHER_API_CONFIG = {
 
 export const POPULATION_API_CONFIG = {
   NAME: "Popolazione per anno",
-  BASE_URL: `https://api.worldbank.org/v2/country/@country_code@/indicator/SP.P
-  OP.TOTL?date=@start_year@:@end_year@&format=json&per_page=10000`,
+  BASE_URL: `https://api.worldbank.org/v2/country/@COUNTRY_CODE@/indicator/
+  SP.POP.TOTL?date=@START_YEAR@:@END_YEAR@&format=json&per_page=10000`,
   START_YEAR: 1970,
   END_YEAR: 2023,
   COUNTRIES: [
@@ -190,7 +190,7 @@ export const POPULATION_API_CONFIG = {
 export const FLIGHTS_API_CONFIG = {
   NAME: "Partenze aeree",
   BASE_URL: `https://opensky-network.org/api/flights/departure?airport=
-  @airport@start_datetime@&end=@end_datetime@`,
+  @AIRPORT@START_DATETIME@&end=@END_DATETIME@`,
   // 2 aprile 2024 00:00:00
   START_DATETIME: 1712016000,
   NUM_INTERVALS: 24,
@@ -317,5 +317,22 @@ export const FLIGHTS_API_CONFIG = {
     x: "Fascia oraria",
     y: "Numero di partenze",
     z: "Aeroporto",
+  },
+};
+
+export const CURRENCY_API_CONFIG = {
+  NAME: "Tassi di cambio",
+  BASE_URL: `https://api.currencybeacon.com/v1/historical?api_key=@API_KEY@
+  &base=EUR&date=@YEAR@-01-01`,
+  START_YEAR: 2005,
+  END_YEAR: 2025,
+  NUM_CURRENCIES: 200,
+  DESCRIPTION: `Dataset contenente i tassi di cambio rispetto all'Euro, 
+  campionati all'inizio di ogni anno dal 2005 al 2025. Il numero di valute
+  disponibili è approssimato.`,
+  LEGEND: {
+    x: "Anno",
+    y: "Tasso",
+    z: "Valuta",
   },
 };
