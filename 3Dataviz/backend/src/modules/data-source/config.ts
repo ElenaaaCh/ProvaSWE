@@ -32,7 +32,7 @@ export const WEATHER_API_CONFIG = {
     },
   ],
   DESCRIPTION: `Dataset contenente la temperatura media oraria per alcune 
-  grandi città europee, dal 01/01/2025 al 31/03/2024.`,
+  grandi città europee, dal 01/01/2025 al 31/03/2025.`,
   LEGEND: {
     x: "Ore",
     y: "Temperatura (°C)",
@@ -241,11 +241,6 @@ export const FLIGHTS_API_CONFIG = {
       airportCode: "EDDF",
     },
     {
-      id: 8,
-      name: "Los Angeles",
-      airportCode: "KLAX",
-    },
-    {
       id: 9,
       name: "Madrid",
       airportCode: "LEMD",
@@ -307,6 +302,11 @@ export const FLIGHTS_API_CONFIG = {
     },
     {
       id: 21,
+      name: "Los Angeles",
+      airportCode: "KLAX",
+    },
+    {
+      id: 22,
       name: "Sydney",
       airportCode: "YSSY",
     },
