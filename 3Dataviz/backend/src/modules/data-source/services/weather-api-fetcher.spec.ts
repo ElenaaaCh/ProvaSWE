@@ -27,35 +27,35 @@ import { Dataset } from "src/interfaces/dataset.interface";
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe("WeatherApiService", () => {
-  let fetcher: WeatherApiFetcher;
+  let weatherApiFetcher: WeatherApiFetcher;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [WeatherApiFetcher],
     }).compile();
 
-    fetcher = module.get<WeatherApiFetcher>(WeatherApiFetcher);
+    weatherApiFetcher = module.get<WeatherApiFetcher>(WeatherApiFetcher);
     mockedAxios.get = jest.fn();
   });
 
   it("should be defined", () => {
-    expect(fetcher).toBeDefined();
+    expect(weatherApiFetcher).toBeDefined();
   });
 
   it("should return the correct name", () => {
-    const name = fetcher.getName();
+    const name = weatherApiFetcher.getName();
     expect(name).toBe(WEATHER_API_CONFIG.NAME);
   });
 
   it("should return the correct size", () => {
-    const size = fetcher.getSize();
-    const numberOfDays = 1;
-    const expectedSize = [numberOfDays * 24, WEATHER_API_CONFIG.CITIES.length];
+    const size = weatherApiFetcher.getSize();
+    const numDays = 2; // 2023-01-01 to 2023-01-02
+    const expectedSize = [numDays * 24, WEATHER_API_CONFIG.CITIES.length];
     expect(size).toEqual(expectedSize);
   });
 
   it("should return the correct description", () => {
-    const description = fetcher.getDescription();
+    const description = weatherApiFetcher.getDescription();
     expect(description).toBe(WEATHER_API_CONFIG.DESCRIPTION);
   });
 
@@ -80,7 +80,7 @@ describe("WeatherApiService", () => {
     (mockedAxios.get as jest.Mock).mockResolvedValue({ data: mockWeatherData });
 
     // Chiamata al metodo pubblico fetchData()
-    const result = await fetcher.fetchData();
+    const result = await weatherApiFetcher.fetchData();
 
     // Verifica che axios sia stato chiamato con qualche URL (non conosciamo il valore esatto)
     expect(mockedAxios.get).toHaveBeenCalled();
@@ -115,11 +115,7 @@ describe("WeatherApiService", () => {
           z: 1,
         },
       ],
-      legend: {
-        x: "Ore",
-        y: "Temperatura (°C)",
-        z: "Città",
-      },
+      legend: WEATHER_API_CONFIG.LEGEND,
       xLabels: ["2025-01-01T12:00:00", "2025-01-01T13:00:00"],
       zLabels: ["Francoforte", "Parigi"],
     };
@@ -132,7 +128,7 @@ describe("WeatherApiService", () => {
       new Error("Network Error"),
     );
 
-    await expect(fetcher.fetchData()).rejects.toThrow(
+    await expect(weatherApiFetcher.fetchData()).rejects.toThrow(
       "Errore nel recupero dei dati.\nError: Network Error",
     );
   });
@@ -149,7 +145,7 @@ describe("WeatherApiService", () => {
 
     (mockedAxios.get as jest.Mock).mockResolvedValue({ data: mockWeatherData });
 
-    await expect(fetcher.fetchData()).rejects.toThrow(
+    await expect(weatherApiFetcher.fetchData()).rejects.toThrow(
       "Errore nel recupero dei dati.\nError: Formato dei dati non valido",
     );
   });

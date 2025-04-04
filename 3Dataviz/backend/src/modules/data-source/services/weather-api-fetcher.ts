@@ -17,7 +17,7 @@ export interface WeatherData {
 export class WeatherApiFetcher extends BaseFetcher {
   private daysBetween(start: Date, end: Date): number {
     const oneDay = 24 * 60 * 60 * 1000;
-    return Math.round((end.getTime() - start.getTime()) / oneDay);
+    return Math.round((end.getTime() - start.getTime()) / oneDay) + 1;
   }
 
   private buildUrl(): string {
@@ -43,13 +43,13 @@ export class WeatherApiFetcher extends BaseFetcher {
   }
 
   getSize(): [number, number] {
-    const numberOfDays = this.daysBetween(
+    const numDays = this.daysBetween(
       new Date(WEATHER_API_CONFIG.START_DATE),
       new Date(WEATHER_API_CONFIG.END_DATE),
     );
-    const numberOfHours = numberOfDays * 24;
-    const numberOfCities = WEATHER_API_CONFIG.CITIES.length;
-    return [numberOfHours, numberOfCities];
+    const numHours = numDays * 24;
+    const numCities = WEATHER_API_CONFIG.CITIES.length;
+    return [numHours, numCities];
   }
 
   getDescription(): string {

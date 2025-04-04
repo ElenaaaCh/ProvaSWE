@@ -27,39 +27,37 @@ import { Dataset } from "src/interfaces/dataset.interface";
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe("PopulationApiFetcher", () => {
-  let fetcher: PopulationApiFetcher;
+  let populationApiFetcher: PopulationApiFetcher;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [PopulationApiFetcher],
     }).compile();
 
-    fetcher = module.get<PopulationApiFetcher>(PopulationApiFetcher);
+    populationApiFetcher =
+      module.get<PopulationApiFetcher>(PopulationApiFetcher);
     mockedAxios.get = jest.fn();
   });
 
   it("should be defined", () => {
-    expect(fetcher).toBeDefined();
+    expect(populationApiFetcher).toBeDefined();
   });
 
   it("should return the correct name", () => {
-    const name = fetcher.getName();
+    const name = populationApiFetcher.getName();
     expect(name).toBe(POPULATION_API_CONFIG.NAME);
   });
 
   it("should return the correct size", () => {
-    const size = fetcher.getSize();
-    const numberOfYears =
+    const size = populationApiFetcher.getSize();
+    const numYears =
       POPULATION_API_CONFIG.END_YEAR - POPULATION_API_CONFIG.START_YEAR + 1;
-    const expectedSize = [
-      numberOfYears,
-      POPULATION_API_CONFIG.COUNTRIES.length,
-    ];
+    const expectedSize = [numYears, POPULATION_API_CONFIG.COUNTRIES.length];
     expect(size).toEqual(expectedSize);
   });
 
   it("should return the correct description", () => {
-    const description = fetcher.getDescription();
+    const description = populationApiFetcher.getDescription();
     expect(description).toBe(POPULATION_API_CONFIG.DESCRIPTION);
   });
 
@@ -80,7 +78,7 @@ describe("PopulationApiFetcher", () => {
     });
 
     // Chiamata al metodo pubblico fetchData()
-    const result = await fetcher.fetchData();
+    const result = await populationApiFetcher.fetchData();
 
     // Verifica che axios sia stato chiamato con qualche URL (non conosciamo il valore esatto)
     expect(mockedAxios.get).toHaveBeenCalled();
@@ -115,11 +113,7 @@ describe("PopulationApiFetcher", () => {
           z: 1,
         },
       ],
-      legend: {
-        x: "Anno",
-        y: "Popolazione",
-        z: "Paese",
-      },
+      legend: POPULATION_API_CONFIG.LEGEND,
       xLabels: ["2022", "2023"],
       zLabels: ["Germania", "Francia"],
     };
@@ -132,7 +126,7 @@ describe("PopulationApiFetcher", () => {
       new Error("Network Error"),
     );
 
-    await expect(fetcher.fetchData()).rejects.toThrow(
+    await expect(populationApiFetcher.fetchData()).rejects.toThrow(
       "Errore nel recupero dei dati.\nError: Network Error",
     );
   });
@@ -145,7 +139,7 @@ describe("PopulationApiFetcher", () => {
       data: mockPopulationData,
     });
 
-    await expect(fetcher.fetchData()).rejects.toThrow(
+    await expect(populationApiFetcher.fetchData()).rejects.toThrow(
       "Errore nel recupero dei dati.\nError: Formato dei dati non valido",
     );
   });

@@ -186,3 +186,136 @@ export const POPULATION_API_CONFIG = {
     z: "Paese",
   },
 };
+
+export const FLIGHTS_API_CONFIG = {
+  NAME: "Partenze aeree",
+  BASE_URL: `https://opensky-network.org/api/flights/departure?airport=
+  @airport@start_datetime@&end=@end_datetime@`,
+  // 2 aprile 2024 00:00:00
+  START_DATETIME: 1712016000,
+  NUM_INTERVALS: 24,
+  AIRPORTS: [
+    {
+      id: 0,
+      name: "Tokyo",
+      airportCode: "RJTT",
+    },
+    {
+      id: 1,
+      name: "Pechino",
+      airportCode: "ZBAA",
+    },
+    {
+      id: 2,
+      name: "Shanghai",
+      airportCode: "ZSPD",
+    },
+    {
+      id: 3,
+      name: "Dammam",
+      airportCode: "OEDF",
+    },
+    {
+      id: 4,
+      name: "Dubai",
+      airportCode: "OMDB",
+    },
+    {
+      id: 5,
+      name: "Istanbul",
+      airportCode: "LTFM",
+    },
+    {
+      id: 6,
+      name: "Mosca",
+      airportCode: "UUEE",
+    },
+    {
+      id: 7,
+      name: "El Cairo",
+      airportCode: "HECA",
+    },
+    {
+      id: 8,
+      name: "Francoforte",
+      airportCode: "EDDF",
+    },
+    {
+      id: 8,
+      name: "Los Angeles",
+      airportCode: "KLAX",
+    },
+    {
+      id: 9,
+      name: "Madrid",
+      airportCode: "LEMD",
+    },
+    {
+      id: 10,
+      name: "Milano",
+      airportCode: "LIMC",
+    },
+    {
+      id: 11,
+      name: "Parigi",
+      airportCode: "LFPG",
+    },
+    {
+      id: 12,
+      name: "Lisbona",
+      airportCode: "LPPT",
+    },
+    {
+      id: 13,
+      name: "Londra",
+      airportCode: "EGLL",
+    },
+    {
+      id: 14,
+      name: "Buenos Aires",
+      airportCode: "SABE",
+    },
+    {
+      id: 15,
+      name: "Rio de Janeiro",
+      airportCode: "SBGL",
+    },
+    {
+      id: 16,
+      name: "Atlanta",
+      airportCode: "KATL",
+    },
+    {
+      id: 17,
+      name: "New York",
+      airportCode: "KJFK",
+    },
+    {
+      id: 18,
+      name: "Chicago",
+      airportCode: "KORD",
+    },
+    {
+      id: 19,
+      name: "Dallas",
+      airportCode: "KDFW",
+    },
+    {
+      id: 20,
+      name: "Denver",
+      airportCode: "KDEN",
+    },
+    {
+      id: 21,
+      name: "Sydney",
+      airportCode: "YSSY",
+    },
+  ],
+  DESCRIPTION: `Dataset contenente il numero di partenze aeree da alcuni
+  aeroporti internazionali nelle diverse fasce orarie in una giornata.`,
+  LEGEND: {
+    x: "Fascia oraria",
+    y: "Numero di partenze",
+    z: "Aeroporto",
+  },
+};

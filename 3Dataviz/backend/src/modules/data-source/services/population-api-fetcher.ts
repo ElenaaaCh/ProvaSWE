@@ -35,10 +35,10 @@ export class PopulationApiFetcher extends BaseFetcher {
   }
 
   getSize(): [number, number] {
-    const numberOfYears =
+    const numYears =
       POPULATION_API_CONFIG.END_YEAR - POPULATION_API_CONFIG.START_YEAR + 1;
-    const numberOfCountries = POPULATION_API_CONFIG.COUNTRIES.length;
-    return [numberOfYears, numberOfCountries];
+    const numCountries = POPULATION_API_CONFIG.COUNTRIES.length;
+    return [numYears, numCountries];
   }
 
   getDescription(): string {
@@ -62,8 +62,6 @@ export class PopulationApiFetcher extends BaseFetcher {
     const legend: Legend = POPULATION_API_CONFIG.LEGEND;
     try {
       const records = data[data.length - 1];
-      console.log(data);
-      console.log(records);
       // Array di tutti gli anni in ordine crescente, escludendo i duplicati
       const xLabels = [...new Set(records.map((entry) => entry.date))].sort();
       const zLabels = POPULATION_API_CONFIG.COUNTRIES.map(
