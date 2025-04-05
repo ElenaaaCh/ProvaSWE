@@ -10,6 +10,8 @@ jobs:
   test-backend:
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.head_ref, 'code/') }} 
+    env:
+      CI: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
