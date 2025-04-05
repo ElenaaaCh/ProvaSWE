@@ -42,3 +42,5 @@ jobs:
       - name: Build
         run: npm run build
         working-directory: 3Dataviz/backend
+      - name: exit
+        run: exit 0
