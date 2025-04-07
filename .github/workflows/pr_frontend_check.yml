@@ -3,15 +3,13 @@ name: Check frontend code
 on:
   pull_request:
     branches:
-      - 'code/frontend-**'
+      - 'code/frontend'
       - main
       
 jobs:
   test-frontend:
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.head_ref, 'code/') }} 
-    env:
-      CI: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,19 +26,17 @@ jobs:
         working-directory: 3Dataviz/frontend
 
       - name: Check format
-        run: npx prettier --check .
+        run: npm run format:check
         working-directory: 3Dataviz/frontend
 
       - name: Run lint
-        run: npm run lint
+        run: npm run lint:check
         working-directory: 3Dataviz/frontend
 
       - name: Run tests
-        run: npm test
+        run: npm run test
         working-directory: 3Dataviz/frontend
 
       - name: Build
         run: npm run build
         working-directory: 3Dataviz/frontend
-      - name: exit
-        run: exit 0
