@@ -1,6 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { DataSourceService } from "./data-source.service";
-import { BaseFetcher } from "./base-fetcher";
+import { BaseFetcher } from "../../fetchers/services/base-fetcher";
 import { Dataset } from "../../../interfaces/dataset.interface";
 import { Legend } from "../../../interfaces/legend.interface";
 

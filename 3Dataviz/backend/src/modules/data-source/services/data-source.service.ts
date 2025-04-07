@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { BaseFetcher } from "./base-fetcher";
+import { BaseFetcher } from "../../fetchers/services/base-fetcher";
 
 export type DataSource = {
   id: number;
