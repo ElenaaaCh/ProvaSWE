@@ -6,13 +6,7 @@ import { Dataset } from "../../../interfaces/dataset.interface";
 import { Entry } from "../../../interfaces/entry.interface";
 import { Legend } from "../../../interfaces/legend.interface";
 import { ConfigService } from "@nestjs/config";
-
-export interface CurrencyData {
-  rates: {
-    // Chiave dinamica per le valute
-    [currencyCode: string]: number;
-  };
-}
+import { CurrencyData } from "../interfaces/currency-data.interface";
 
 @Injectable()
 export class CurrencyApiFetcher extends BaseFetcher {
@@ -57,7 +51,6 @@ export class CurrencyApiFetcher extends BaseFetcher {
       ) {
         const url = this.buildUrl(year);
         const response = await axios.get<CurrencyData>(url);
-        console.log(response);
         data.push(response.data);
       }
       const dataset = this.transformData(data);

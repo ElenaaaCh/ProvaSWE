@@ -20,7 +20,7 @@ jest.mock("axios");
 import { Test, TestingModule } from "@nestjs/testing";
 import { WeatherApiFetcher } from "./weather-api-fetcher";
 import { WEATHER_API_CONFIG } from "../config";
-import { WeatherData } from "./weather-api-fetcher";
+import { WeatherData } from "../interfaces/weather-data.interface";
 import axios from "axios";
 import { Dataset } from "src/interfaces/dataset.interface";
 

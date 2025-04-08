@@ -19,7 +19,7 @@ jest.mock("@nestjs/config");
 import { Test, TestingModule } from "@nestjs/testing";
 import { CurrencyApiFetcher } from "./currency-api-fetcher";
 import { CURRENCY_API_CONFIG } from "../config";
-import { CurrencyData } from "./currency-api-fetcher";
+import { CurrencyData } from "../interfaces/currency-data.interface";
 import axios from "axios";
 import { Dataset } from "src/interfaces/dataset.interface";
 import { ConfigService } from "@nestjs/config";

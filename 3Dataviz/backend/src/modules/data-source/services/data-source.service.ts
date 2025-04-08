@@ -1,18 +1,12 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { BaseFetcher } from "../../fetchers/services/base-fetcher";
-
-export type DataSource = {
-  id: number;
-  name: string;
-  size: [number, number];
-  description: string;
-};
+import { DataSourceDto } from "../dto/data-source.dto";
 
 @Injectable()
 export class DataSourceService {
   constructor(@Inject("FETCHERS") private fetchers: BaseFetcher[]) {}
   getSources() {
-    const sources: DataSource[] = this.fetchers.map((fetcher, index) => ({
+    const sources: DataSourceDto[] = this.fetchers.map((fetcher, index) => ({
       id: index,
       name: fetcher.getName(),
       size: fetcher.getSize(),

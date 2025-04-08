@@ -20,7 +20,7 @@ jest.mock("axios");
 import { Test, TestingModule } from "@nestjs/testing";
 import { PopulationApiFetcher } from "./population-api-fetcher";
 import { POPULATION_API_CONFIG } from "../config";
-import { PopulationData } from "./population-api-fetcher";
+import { PopulationData } from "../interfaces/population-data.interface";
 import axios from "axios";
 import { Dataset } from "src/interfaces/dataset.interface";
 

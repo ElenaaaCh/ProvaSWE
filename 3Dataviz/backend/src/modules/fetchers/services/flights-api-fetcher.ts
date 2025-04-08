@@ -5,12 +5,7 @@ import { FLIGHTS_API_CONFIG } from "../config";
 import { Dataset } from "../../../interfaces/dataset.interface";
 import { Entry } from "../../../interfaces/entry.interface";
 import { Legend } from "../../../interfaces/legend.interface";
-
-interface FlightsRecord {
-  estDepartureAirport: string;
-}
-
-export type FlightsData = FlightsRecord[];
+import { FlightsData } from "../interfaces/flights-data.interface";
 
 @Injectable()
 export class FlightsApiFetcher extends BaseFetcher {
@@ -48,7 +43,6 @@ export class FlightsApiFetcher extends BaseFetcher {
         for (let i = 0; i < FLIGHTS_API_CONFIG.AIRPORTS.length; i++) {
           const url = this.buildUrl(i, hour);
           const response = await axios.get<FlightsData>(url);
-          console.log(response);
           data.push(response.data);
         }
       }

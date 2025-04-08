@@ -5,14 +5,7 @@ import { POPULATION_API_CONFIG } from "../config";
 import { Dataset } from "../../../interfaces/dataset.interface";
 import { Entry } from "../../../interfaces/entry.interface";
 import { Legend } from "../../../interfaces/legend.interface";
-
-interface PopulationRecord {
-  countryiso3code: string;
-  date: string;
-  value: number;
-}
-
-export type PopulationData = PopulationRecord[];
+import { PopulationData } from "../interfaces/population-data.interface";
 
 @Injectable()
 export class PopulationApiFetcher extends BaseFetcher {

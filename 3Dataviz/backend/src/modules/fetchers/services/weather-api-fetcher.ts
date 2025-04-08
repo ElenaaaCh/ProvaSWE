@@ -5,13 +5,7 @@ import { WEATHER_API_CONFIG } from "../config";
 import { Dataset } from "../../../interfaces/dataset.interface";
 import { Entry } from "../../../interfaces/entry.interface";
 import { Legend } from "../../../interfaces/legend.interface";
-
-export interface WeatherData {
-  hourly: {
-    time: string[];
-    temperature_2m: number[];
-  };
-}
+import { WeatherData } from "../interfaces/weather-data.interface";
 
 @Injectable()
 export class WeatherApiFetcher extends BaseFetcher {
