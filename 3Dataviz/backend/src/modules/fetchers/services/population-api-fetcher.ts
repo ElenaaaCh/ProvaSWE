@@ -41,6 +41,7 @@ export class PopulationApiFetcher extends BaseFetcher {
   async fetchData(): Promise<Dataset> {
     try {
       const url = this.buildUrl();
+      console.log(url);
       const response = await axios.get<PopulationData[]>(url);
       const data = response.data;
       const dataset = this.transformData(data);

@@ -4,6 +4,13 @@ import { DataVisualizationService } from "../services/data-visualization.service
 
 describe("DataVisualizationController", () => {
   let controller: DataVisualizationController;
+  let service: DataVisualizationService;
+  const mockDataset = {
+    data: [{ id: 1, x: 0, y: 0, z: 0 }],
+    legend: { x: "X", y: "Y", z: "Z" },
+    xLabels: ["Label 1"],
+    zLabels: ["Label 1"],
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -12,14 +19,7 @@ describe("DataVisualizationController", () => {
         {
           provide: DataVisualizationService,
           useValue: {
-            getSources: jest.fn().mockReturnValue([
-              {
-                id: 1,
-                name: "Source 1",
-                size: [100, 20],
-                description: "A data source",
-              },
-            ]), // Mock del servizio
+            getDatasetById: jest.fn().mockResolvedValue(mockDataset), // Mock del servizio
           },
         },
       ],
@@ -28,9 +28,16 @@ describe("DataVisualizationController", () => {
     controller = module.get<DataVisualizationController>(
       DataVisualizationController,
     );
+    service = module.get<DataVisualizationService>(DataVisualizationService);
   });
 
   it("should be defined", () => {
     expect(controller).toBeDefined();
+  });
+
+  it("should return a dataset", async () => {
+    const dataset = await controller.getDataset(0);
+    expect(service.getDatasetById).toHaveBeenCalledWith(0);
+    expect(dataset).toEqual(mockDataset);
   });
 });

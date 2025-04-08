@@ -1,64 +1,37 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { DataSourceService } from "./data-source.service";
 import { BaseFetcher } from "../../fetchers/services/base-fetcher";
-import { Dataset } from "../../../interfaces/dataset.interface";
-import { Legend } from "../../../interfaces/legend.interface";
 
 // Creazione di una classe mock per BaseFetcher
+const mockDataset = {
+  data: [{ id: 0, x: 0, y: 0, z: 0 }],
+  legend: { x: "X", y: "Y", z: "Z" },
+  xLabels: ["Label 1"],
+  zLabels: ["Label 1"],
+};
 class MockFetcher extends BaseFetcher {
-  getName(): string {
-    return "Mock Name";
-  }
+  getName = jest.fn(() => "Mock Name");
+  getSize = jest.fn(() => [10, 5] as [number, number]);
+  getDescription = jest.fn(() => "Mock Description");
 
-  getSize(): [number, number] {
-    return [10, 5];
-  }
-
-  getDescription(): string {
-    return "Mock Description";
-  }
-
-  fetchData(): Promise<Dataset> {
-    return Promise.resolve({
-      data: [],
-      legend: {
-        x: "",
-        y: "",
-        z: "",
-      } as Legend,
-      xLabels: [],
-      zLabels: [],
-    });
-  }
-
-  transformData(): Dataset {
-    return {
-      data: [],
-      legend: {
-        x: "",
-        y: "",
-        z: "",
-      } as Legend,
-      xLabels: [],
-      zLabels: [],
-    };
-  }
+  fetchData = jest.fn(() => Promise.resolve(mockDataset));
+  transformData = jest.fn(() => mockDataset);
 }
 
 describe("DataSourceService", () => {
   let service: DataSourceService;
+  let mockFetcher0: MockFetcher;
   let mockFetcher1: MockFetcher;
-  let mockFetcher2: MockFetcher;
 
   beforeEach(async () => {
+    mockFetcher0 = new MockFetcher();
     mockFetcher1 = new MockFetcher();
-    mockFetcher2 = new MockFetcher();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DataSourceService,
         {
           provide: "FETCHERS",
-          useValue: [mockFetcher1, mockFetcher2],
+          useValue: [mockFetcher0, mockFetcher1],
         },
       ],
     }).compile();
@@ -75,11 +48,11 @@ describe("DataSourceService", () => {
     expect(sources).toHaveLength(2);
     expect(sources[0].id).toEqual(0);
     expect(sources[1].id).toEqual(1);
-    expect(sources[0].name).toBe(mockFetcher1.getName());
-    expect(sources[1].name).toBe(mockFetcher2.getName());
-    expect(sources[0].size).toEqual(mockFetcher1.getSize());
-    expect(sources[1].size).toEqual(mockFetcher2.getSize());
-    expect(sources[0].description).toBe(mockFetcher1.getDescription());
-    expect(sources[1].description).toBe(mockFetcher2.getDescription());
+    expect(sources[0].name).toBe(mockFetcher0.getName());
+    expect(sources[1].name).toBe(mockFetcher1.getName());
+    expect(sources[0].size).toEqual(mockFetcher0.getSize());
+    expect(sources[1].size).toEqual(mockFetcher1.getSize());
+    expect(sources[0].description).toBe(mockFetcher0.getDescription());
+    expect(sources[1].description).toBe(mockFetcher1.getDescription());
   });
 });

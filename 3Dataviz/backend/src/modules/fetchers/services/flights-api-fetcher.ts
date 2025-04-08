@@ -12,8 +12,7 @@ export class FlightsApiFetcher extends BaseFetcher {
   private buildUrl(id: number, hour: number): string {
     const airportCode = FLIGHTS_API_CONFIG.AIRPORTS[id].airportCode;
     const startDatetime = FLIGHTS_API_CONFIG.START_DATETIME + hour * 3600;
-    // Intervalli di un'ora (senza intersezione)
-    const endDatetime = startDatetime + 3599;
+    const endDatetime = startDatetime + FLIGHTS_API_CONFIG.INTERVAL_DURATION;
     const baseUrl = FLIGHTS_API_CONFIG.BASE_URL;
     const url = baseUrl
       .replace("@AIRPORT@", airportCode)
@@ -39,11 +38,22 @@ export class FlightsApiFetcher extends BaseFetcher {
   async fetchData(): Promise<Dataset> {
     const data: FlightsData[] = [];
     try {
-      for (let hour = 0; hour < FLIGHTS_API_CONFIG.NUM_INTERVALS; hour++) {
+      for (let h = 0; h < FLIGHTS_API_CONFIG.NUM_INTERVALS; h++) {
         for (let i = 0; i < FLIGHTS_API_CONFIG.AIRPORTS.length; i++) {
-          const url = this.buildUrl(i, hour);
-          const response = await axios.get<FlightsData>(url);
-          data.push(response.data);
+          const url = this.buildUrl(i, h);
+          console.log(url);
+          const responseData = await axios
+            .get<FlightsData>(url)
+            .then((response): FlightsData => response.data)
+            .catch((error): FlightsData => {
+              if (axios.isAxiosError(error) && error.response?.status === 404) {
+                // Se 404, restituisci array vuoto
+                return [];
+              } else {
+                throw error;
+              }
+            });
+          data.push(responseData);
         }
       }
       const dataset = this.transformData(data);
