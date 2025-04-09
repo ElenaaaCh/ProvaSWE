@@ -25,7 +25,7 @@ export const FLIGHTS_API_CONFIG = {
   // 2 aprile 2025 00:00:00
   START_DATETIME: 1743552000,
   NUM_INTERVALS: 24,
-  INTERVAL_DURATION: 3599, // (1 ore)
+  INTERVAL_DURATION: 7200, // (2 ore)
   AIRPORTS: [
     {
       id: 0,
@@ -157,7 +157,7 @@ export const POPULATION_API_CONFIG = {
   BASE_URL:
     "https://api.worldbank.org/v2/country/@COUNTRY_CODE@/indicator/" +
     "SP.POP.TOTL?date=@START_YEAR@:@END_YEAR@&format=json&per_page=10000",
-  START_YEAR: 1970,
+  START_YEAR: 1974,
   END_YEAR: 2023,
   COUNTRIES: [
     {

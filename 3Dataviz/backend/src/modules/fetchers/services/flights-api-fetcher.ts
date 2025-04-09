@@ -5,14 +5,19 @@ import { FLIGHTS_API_CONFIG } from "../config";
 import { Dataset } from "../../../interfaces/dataset.interface";
 import { Entry } from "../../../interfaces/entry.interface";
 import { Legend } from "../../../interfaces/legend.interface";
-import { FlightsData } from "../interfaces/flights-data.interface";
+import {
+  FlightsData,
+  FlightsRecord,
+} from "../interfaces/flights-data.interface";
 
 @Injectable()
 export class FlightsApiFetcher extends BaseFetcher {
-  private buildUrl(id: number, hour: number): string {
-    const airportCode = FLIGHTS_API_CONFIG.AIRPORTS[id].airportCode;
-    const startDatetime = FLIGHTS_API_CONFIG.START_DATETIME + hour * 3600;
-    const endDatetime = startDatetime + FLIGHTS_API_CONFIG.INTERVAL_DURATION;
+  private buildUrl(airportCode: string): string {
+    const startDatetime = FLIGHTS_API_CONFIG.START_DATETIME;
+    const endDatetime =
+      FLIGHTS_API_CONFIG.START_DATETIME +
+      FLIGHTS_API_CONFIG.NUM_INTERVALS * FLIGHTS_API_CONFIG.INTERVAL_DURATION -
+      1;
     const baseUrl = FLIGHTS_API_CONFIG.BASE_URL;
     const url = baseUrl
       .replace("@AIRPORT@", airportCode)
@@ -36,25 +41,23 @@ export class FlightsApiFetcher extends BaseFetcher {
   }
 
   async fetchData(): Promise<Dataset> {
-    const data: FlightsData[] = [];
+    const data: FlightsData = {};
     try {
-      for (let h = 0; h < FLIGHTS_API_CONFIG.NUM_INTERVALS; h++) {
-        for (let i = 0; i < FLIGHTS_API_CONFIG.AIRPORTS.length; i++) {
-          const url = this.buildUrl(i, h);
-          console.log(url);
-          const responseData = await axios
-            .get<FlightsData>(url)
-            .then((response): FlightsData => response.data)
-            .catch((error): FlightsData => {
-              if (axios.isAxiosError(error) && error.response?.status === 404) {
-                // Se 404, restituisci array vuoto
-                return [];
-              } else {
-                throw error;
-              }
-            });
-          data.push(responseData);
-        }
+      for (const airport of FLIGHTS_API_CONFIG.AIRPORTS) {
+        const url = this.buildUrl(airport.airportCode);
+        console.log(url);
+        const responseData = await axios
+          .get<FlightsRecord[]>(url)
+          .then((response): FlightsRecord[] => response.data)
+          .catch((error): FlightsRecord[] => {
+            if (axios.isAxiosError(error) && error.response?.status === 404) {
+              // Se 404, restituisci array vuoto
+              return [];
+            } else {
+              throw error;
+            }
+          });
+        data[airport.airportCode] = responseData;
       }
       const dataset = this.transformData(data);
       return dataset;
@@ -63,43 +66,62 @@ export class FlightsApiFetcher extends BaseFetcher {
     }
   }
 
-  protected transformData(data: FlightsData[]): Dataset {
+  protected transformData(data: FlightsData): Dataset {
     const entries: Entry[] = [];
     const legend: Legend = FLIGHTS_API_CONFIG.LEGEND;
     const xLabels = Array.from(
       { length: FLIGHTS_API_CONFIG.NUM_INTERVALS },
-      (_, hour) => {
-        const start = hour.toString().padStart(2, "0") + ":00";
-        const end = hour.toString().padStart(2, "0") + ":59";
-        return `${start} - ${end}`;
+      (_, index) => {
+        const startDate = new Date(
+          FLIGHTS_API_CONFIG.START_DATETIME * 1000 +
+            index * FLIGHTS_API_CONFIG.INTERVAL_DURATION * 1000,
+        );
+        const endDate = new Date(
+          startDate.getTime() +
+            (FLIGHTS_API_CONFIG.INTERVAL_DURATION - 1) * 1000,
+        );
+        const day = startDate.toLocaleDateString("it-IT", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+        const startTime = startDate.toLocaleTimeString("it-IT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const endTime = endDate.toLocaleTimeString("it-IT", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        return `${day} ${startTime} - ${endTime}`;
       },
     );
     const zLabels = FLIGHTS_API_CONFIG.AIRPORTS.map((airport) => airport.name);
     try {
-      for (
-        let xIndex = 0;
-        xIndex < FLIGHTS_API_CONFIG.NUM_INTERVALS;
-        xIndex++
-      ) {
-        for (
-          let zIndex = 0;
-          zIndex < FLIGHTS_API_CONFIG.AIRPORTS.length;
-          zIndex++
-        ) {
-          const index = xIndex * FLIGHTS_API_CONFIG.AIRPORTS.length + zIndex;
-          const record = data[index];
-          if (!record.length) {
-            throw new Error();
-          }
+      FLIGHTS_API_CONFIG.AIRPORTS.forEach((airport, zIndex) => {
+        for (let i = 0; i < FLIGHTS_API_CONFIG.NUM_INTERVALS; i++) {
+          // Filtra i record per l'aeroporto e la fascia oraria
+          const records = data[airport.airportCode].filter(
+            (record) =>
+              record.firstSeen >=
+                FLIGHTS_API_CONFIG.START_DATETIME +
+                  i * FLIGHTS_API_CONFIG.INTERVAL_DURATION &&
+              record.firstSeen <
+                FLIGHTS_API_CONFIG.START_DATETIME +
+                  (i + 1) * FLIGHTS_API_CONFIG.INTERVAL_DURATION,
+          );
+          const xIndex = i;
+          const index = i * FLIGHTS_API_CONFIG.AIRPORTS.length + zIndex;
           const entry: Entry = {
             id: index,
             x: xIndex,
-            y: record.length, // Numero di voli in partenza
+            // Numero di voli in partenza nell'i-esima fascia oraria
+            y: records.length,
             z: zIndex,
           };
           entries.push(entry);
         }
-      }
+      });
       const dataset: Dataset = {
         data: entries,
         legend: legend,

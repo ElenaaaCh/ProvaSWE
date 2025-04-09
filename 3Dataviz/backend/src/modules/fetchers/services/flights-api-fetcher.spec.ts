@@ -2,6 +2,7 @@ jest.mock("../config", () => ({
   FLIGHTS_API_CONFIG: {
     START_DATETIME: 0,
     NUM_INTERVALS: 2,
+    INTERVAL_DURATION: 3600,
     AIRPORTS: [
       { id: 0, name: "Parigi", airportCode: "LFPG" },
       { id: 1, name: "Milano", airportCode: "LIMC" },
@@ -21,7 +22,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { FlightsApiFetcher } from "./flights-api-fetcher";
 import { FLIGHTS_API_CONFIG } from "../config";
 import { FlightsData } from "../interfaces/flights-data.interface";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Dataset } from "src/interfaces/dataset.interface";
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -63,33 +64,25 @@ describe("FlightsApiFetcher", () => {
 
   it("should fetch data and return transformed dataset", async () => {
     // Simuliamo la risposta API con dati fittizi
-    const mockFlightsData: FlightsData[] = [
-      [{ estDepartureAirport: "LFPG" }, { estDepartureAirport: "LFPG" }],
-      [{ estDepartureAirport: "LIMC" }],
-      [{ estDepartureAirport: "LFPG" }, { estDepartureAirport: "LFPG" }],
-      [{ estDepartureAirport: "LIMC" }, { estDepartureAirport: "LIMC" }],
-    ];
+    const mockFlightsData: FlightsData = {
+      LFPG: [{ firstSeen: 10 }, { firstSeen: 20 }, { firstSeen: 3630 }],
+      LIMC: [{ firstSeen: 15 }, { firstSeen: 3625 }, { firstSeen: 3600 }],
+    };
 
     // Simuliamo la risposta di Axios
     (mockedAxios.get as jest.Mock)
       .mockResolvedValueOnce({
-        data: mockFlightsData[0],
+        data: mockFlightsData["LFPG"],
       })
       .mockResolvedValueOnce({
-        data: mockFlightsData[1],
-      })
-      .mockResolvedValueOnce({
-        data: mockFlightsData[2],
-      })
-      .mockResolvedValueOnce({
-        data: mockFlightsData[3],
+        data: mockFlightsData["LIMC"],
       });
 
     // Chiamata al metodo pubblico fetchData()
     const result = await flightsApiFetcher.fetchData();
 
     // Verifica che axios sia stato chiamato con qualche URL (non conosciamo il valore esatto)
-    expect(mockedAxios.get).toHaveBeenCalled();
+    expect(mockedAxios.get).toHaveBeenCalledTimes(2);
 
     // Verifica che il risultato sia stato trasformato (controllo generico)
     expect(result).toBeDefined();
@@ -103,16 +96,16 @@ describe("FlightsApiFetcher", () => {
           z: 0,
         },
         {
+          id: 2,
+          x: 1,
+          y: 1,
+          z: 0,
+        },
+        {
           id: 1,
           x: 0,
           y: 1,
           z: 1,
-        },
-        {
-          id: 2,
-          x: 1,
-          y: 2,
-          z: 0,
         },
         {
           id: 3,
@@ -122,7 +115,7 @@ describe("FlightsApiFetcher", () => {
         },
       ],
       legend: FLIGHTS_API_CONFIG.LEGEND,
-      xLabels: ["00:00 - 00:59", "01:00 - 01:59"],
+      xLabels: ["01/01/1970 01:00 - 01:59", "01/01/1970 02:00 - 02:59"],
       zLabels: ["Parigi", "Milano"],
     };
     expect(result).toEqual(expectedResult);
@@ -150,5 +143,55 @@ describe("FlightsApiFetcher", () => {
     await expect(flightsApiFetcher.fetchData()).rejects.toThrow(
       "Errore nel recupero dei dati.\nError: Formato dei dati non valido",
     );
+  });
+
+  it("should handle 404 error and return empty array", async () => {
+    const error = {
+      name: "AxiosError",
+      isAxiosError: true,
+      response: {
+        status: 404,
+        data: "Not Found",
+      },
+    } as AxiosError;
+    // Simuliamo un errore 404
+    (mockedAxios.get as jest.Mock).mockRejectedValue(error);
+    jest.spyOn(axios, "isAxiosError").mockReturnValue(true);
+
+    const result = await flightsApiFetcher.fetchData();
+
+    const expectedResult: Dataset = {
+      data: [
+        {
+          id: 0,
+          x: 0,
+          y: 0,
+          z: 0,
+        },
+        {
+          id: 2,
+          x: 1,
+          y: 0,
+          z: 0,
+        },
+        {
+          id: 1,
+          x: 0,
+          y: 0,
+          z: 1,
+        },
+        {
+          id: 3,
+          x: 1,
+          y: 0,
+          z: 1,
+        },
+      ],
+      legend: FLIGHTS_API_CONFIG.LEGEND,
+      xLabels: ["01/01/1970 01:00 - 01:59", "01/01/1970 02:00 - 02:59"],
+      zLabels: ["Parigi", "Milano"],
+    };
+    expect(mockedAxios.get).toHaveBeenCalledTimes(2);
+    expect(result).toEqual(expectedResult);
   });
 });

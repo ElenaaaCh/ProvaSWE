@@ -1,5 +1,7 @@
-interface FlightsRecord {
-  estDepartureAirport: string;
+export interface FlightsRecord {
+  firstSeen: number;
 }
 
-export type FlightsData = FlightsRecord[];
+export interface FlightsData {
+  [airportCode: string]: FlightsRecord[];
+}
