@@ -1,0 +1,23 @@
+.containerHome{
+    margin: 4em auto auto auto;
+    width: fit-content;
+    background-color: #ededed;
+    text-align: center;
+    border-radius: 15px;
+    padding: 2em;
+}
+
+.teamInfo{
+    margin: 4em auto 4em auto;
+    width: fit-content;
+    text-align: center;
+}
+.teamInfo ul{
+    list-style: none;
+    padding: 0;
+}
+
+#homepageTitle{
+    font-size: 2.5em;
+    color: #005ce5;
+}

@@ -1,0 +1,32 @@
+#APItitle{
+    font-size: 2em;
+    color: #005ce5;
+    text-align: center;
+}
+
+.grid-container {
+    display: grid;
+    grid-template: "a c"
+                   "a c";
+    gap: 20px;
+    padding: 20px;
+}
+
+.ui{
+    grid-area: a;
+    border: 1px solid #005ce5;
+}
+
+.chart{
+    grid-area: c;
+    border: 1px solid #005ce5;
+}
+
+#quitButton{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: 1px solid #005ce5;
+    padding: 2px 5px;
+}
+
