@@ -83,7 +83,7 @@ describe("FlightsApiFetcher", () => {
 
     // Verifica che il risultato sia stato trasformato (controllo generico)
     expect(result).toBeDefined();
-
+    console.log(result);
     const expectedResult: Dataset = {
       data: [
         {
