@@ -1,4 +1,4 @@
 export interface FilterPayload {
-    value: number,
-    isGreater: boolean,
+  value: number;
+  isGreater: boolean;
 }
