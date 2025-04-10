@@ -29,6 +29,12 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe("FlightsApiFetcher", () => {
   let flightsApiFetcher: FlightsApiFetcher;
+  const expectedResult: Dataset = {
+    data: [],
+    legend: FLIGHTS_API_CONFIG.LEGEND,
+    xLabels: ["01/01/1970 00:00 - 00:59", "01/01/1970 01:00 - 01:59"],
+    zLabels: ["Parigi", "Milano"],
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -83,38 +89,32 @@ describe("FlightsApiFetcher", () => {
 
     // Verifica che il risultato sia stato trasformato (controllo generico)
     expect(result).toBeDefined();
-    console.log(result);
-    const expectedResult: Dataset = {
-      data: [
-        {
-          id: 0,
-          x: 0,
-          y: 2,
-          z: 0,
-        },
-        {
-          id: 2,
-          x: 1,
-          y: 1,
-          z: 0,
-        },
-        {
-          id: 1,
-          x: 0,
-          y: 1,
-          z: 1,
-        },
-        {
-          id: 3,
-          x: 1,
-          y: 2,
-          z: 1,
-        },
-      ],
-      legend: FLIGHTS_API_CONFIG.LEGEND,
-      xLabels: ["01/01/1970 01:00 - 01:59", "01/01/1970 02:00 - 02:59"],
-      zLabels: ["Parigi", "Milano"],
-    };
+    expectedResult.data = [
+      {
+        id: 0,
+        x: 0,
+        y: 2,
+        z: 0,
+      },
+      {
+        id: 2,
+        x: 1,
+        y: 1,
+        z: 0,
+      },
+      {
+        id: 1,
+        x: 0,
+        y: 1,
+        z: 1,
+      },
+      {
+        id: 3,
+        x: 1,
+        y: 2,
+        z: 1,
+      },
+    ];
     expect(result).toEqual(expectedResult);
   });
 
@@ -157,37 +157,32 @@ describe("FlightsApiFetcher", () => {
 
     const result = await flightsApiFetcher.fetchData();
 
-    const expectedResult: Dataset = {
-      data: [
-        {
-          id: 0,
-          x: 0,
-          y: 0,
-          z: 0,
-        },
-        {
-          id: 2,
-          x: 1,
-          y: 0,
-          z: 0,
-        },
-        {
-          id: 1,
-          x: 0,
-          y: 0,
-          z: 1,
-        },
-        {
-          id: 3,
-          x: 1,
-          y: 0,
-          z: 1,
-        },
-      ],
-      legend: FLIGHTS_API_CONFIG.LEGEND,
-      xLabels: ["01/01/1970 01:00 - 01:59", "01/01/1970 02:00 - 02:59"],
-      zLabels: ["Parigi", "Milano"],
-    };
+    expectedResult.data = [
+      {
+        id: 0,
+        x: 0,
+        y: 0,
+        z: 0,
+      },
+      {
+        id: 2,
+        x: 1,
+        y: 0,
+        z: 0,
+      },
+      {
+        id: 1,
+        x: 0,
+        y: 0,
+        z: 1,
+      },
+      {
+        id: 3,
+        x: 1,
+        y: 0,
+        z: 1,
+      },
+    ];
     expect(result).toEqual(expectedResult);
   });
 });
