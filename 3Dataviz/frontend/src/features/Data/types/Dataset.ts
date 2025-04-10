@@ -1,4 +1,3 @@
-import { Data } from "../interfaces/Data";
 import { Legend } from "../interfaces/Legend";
 
 type Entity = {

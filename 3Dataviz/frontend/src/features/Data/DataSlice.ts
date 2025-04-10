@@ -19,18 +19,18 @@ const dataSlice = createSlice({
   initialState,
   reducers: {
     filterTopN: (state, action: PayloadAction<FilterPayload>) => {
-      let sortedData: number[]; // array dei dati da filtrare
+      // array dei dati da filtrare
+      let sortedData: number[];
       if (action.payload.isGreater) {
-        // top
         sortedData = [...state.data]
           .sort((a, b) => b.y - a.y)
           .slice(0, action.payload.value)
-          .map((data) => data.id); // copia dell`array di dati per prendere gli N valori piu` alti
+          .map((data) => data.id);
       } else {
         sortedData = [...state.data]
           .sort((a, b) => a.y - b.y)
           .slice(0, action.payload.value)
-          .map((data) => data.id); // copia dell`array di dati per prendere gli N valori piu` bassi
+          .map((data) => data.id);
       }
 
       state.data.forEach((data) => {
