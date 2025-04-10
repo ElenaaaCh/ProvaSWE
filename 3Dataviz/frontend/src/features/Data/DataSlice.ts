@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DataState } from "./DataState";
+import { DataState } from "./interfaces/DataState";
 import { RootState } from "../../app/Store";
 import axios from "axios";
-import { FilterPayload } from "./FilterPayload";
-import { Data } from "./Data";
-import { Dataset } from "./Dataset";
+import { FilterPayload } from "./interfaces/FilterPayload";
+import { Data } from "./interfaces/Data";
+import { Dataset } from "./types/Dataset";
 
 const initialState: DataState = {
         data: [],
