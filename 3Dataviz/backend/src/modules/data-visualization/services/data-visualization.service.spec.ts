@@ -1,7 +1,8 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { DataVisualizationService } from "./data-visualization.service";
-import { Dataset } from "../../../interfaces/dataset.interface";
+import { Dataset } from "src/interfaces/dataset.interface";
 import { BaseFetcher } from "../../../modules/fetchers/services/base-fetcher";
+import { CacheService } from "../../../modules/cache/services/cache.service";
 
 // Creazione di una classe mock per BaseFetcher
 const mockDataset: Dataset = {
@@ -21,6 +22,7 @@ class MockFetcher extends BaseFetcher {
 
 describe("DataVisualizationService", () => {
   let service: DataVisualizationService;
+  let cacheService: CacheService;
   let mockFetcher0: MockFetcher;
   let mockFetcher1: MockFetcher;
 
@@ -30,6 +32,7 @@ describe("DataVisualizationService", () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         DataVisualizationService,
+        CacheService,
         {
           provide: "FETCHERS",
           useValue: [mockFetcher0, mockFetcher1],
@@ -38,26 +41,42 @@ describe("DataVisualizationService", () => {
     }).compile();
 
     service = module.get<DataVisualizationService>(DataVisualizationService);
+    cacheService = module.get<CacheService>(CacheService);
   });
 
   it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  it("should fetch data from the correct fetcher", async () => {
-    const dataset = await service.getDatasetById(0);
-    expect(dataset).toBeDefined();
-    expect(mockFetcher0.fetchData).toHaveBeenCalled();
-  });
-
   it("should throw an error if fetcher is not found", async () => {
-    await expect(service.getDatasetById(3)).rejects.toThrow(
+    await expect(service.getDatasetById(-1)).rejects.toThrow(
+      "Invalid fetcher ID",
+    );
+    // Controllo con un ID uguale al numero di fetcher
+    await expect(service.getDatasetById(2)).rejects.toThrow(
       "Invalid fetcher ID",
     );
   });
 
-  it("should return the correct dataset", async () => {
+  it("should get the dataset if cached", async () => {
+    cacheService.getDatasetFromCache = jest.fn(() => mockDataset);
+    const id = 0;
+    const dataset = await service.getDatasetById(id);
+    expect(dataset).toEqual(mockDataset);
+  });
+
+  it("should fetch data from the correct fetcher if not cached", async () => {
+    cacheService.getDatasetFromCache = jest.fn(() => null);
     const dataset = await service.getDatasetById(0);
     expect(dataset).toEqual(mockDataset);
+    expect(mockFetcher0.fetchData).toHaveBeenCalled();
+  });
+
+  it("should save the dataset to cache", async () => {
+    cacheService.getDatasetFromCache = jest.fn(() => null);
+    const spy = jest.spyOn(cacheService, "saveDatasetToCache");
+    const id = 0;
+    await service.getDatasetById(id);
+    expect(spy).toHaveBeenCalledWith(id, mockDataset);
   });
 });

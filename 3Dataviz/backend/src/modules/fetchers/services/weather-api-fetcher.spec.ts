@@ -126,7 +126,7 @@ describe("WeatherApiService", () => {
     );
 
     await expect(weatherApiFetcher.fetchData()).rejects.toThrow(
-      "Errore nel recupero dei dati.\nError: Network Error",
+      "Errore nel recupero dei dati\nError: Network Error",
     );
   });
 
@@ -143,7 +143,7 @@ describe("WeatherApiService", () => {
     (mockedAxios.get as jest.Mock).mockResolvedValue({ data: mockWeatherData });
 
     await expect(weatherApiFetcher.fetchData()).rejects.toThrow(
-      "Errore nel recupero dei dati.\nError: Formato dei dati non valido",
+      "Errore nel recupero dei dati\nError: Formato dei dati non valido",
     );
   });
 });

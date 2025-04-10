@@ -124,7 +124,7 @@ describe("PopulationApiFetcher", () => {
     );
 
     await expect(populationApiFetcher.fetchData()).rejects.toThrow(
-      "Errore nel recupero dei dati.\nError: Network Error",
+      "Errore nel recupero dei dati\nError: Network Error",
     );
   });
 
@@ -137,7 +137,7 @@ describe("PopulationApiFetcher", () => {
     });
 
     await expect(populationApiFetcher.fetchData()).rejects.toThrow(
-      "Errore nel recupero dei dati.\nError: Formato dei dati non valido",
+      "Errore nel recupero dei dati\nError: Formato dei dati non valido\nTypeError: Cannot read properties of undefined (reading 'name')",
     );
   });
 });

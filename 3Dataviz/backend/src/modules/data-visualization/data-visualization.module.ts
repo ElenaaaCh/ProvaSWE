@@ -6,11 +6,13 @@ import { CurrencyApiFetcher } from "../fetchers/services/currency-api-fetcher";
 import { FlightsApiFetcher } from "../fetchers/services/flights-api-fetcher";
 import { PopulationApiFetcher } from "../fetchers/services/population-api-fetcher";
 import { WeatherApiFetcher } from "../fetchers/services/weather-api-fetcher";
+import { CacheService } from "../cache/services/cache.service";
 
 @Module({
   controllers: [DataVisualizationController],
   providers: [
     DataVisualizationService,
+    CacheService,
     {
       provide: "FETCHERS",
       useFactory: (configService: ConfigService) => {

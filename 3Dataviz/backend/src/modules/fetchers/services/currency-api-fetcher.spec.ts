@@ -164,7 +164,7 @@ describe("CurrencyApiFetcher", () => {
     );
 
     await expect(currencyApiFetcher.fetchData()).rejects.toThrow(
-      "Errore nel recupero dei dati.\nError: Network Error",
+      "Errore nel recupero dei dati\nError: Network Error",
     );
   });
 
@@ -177,7 +177,7 @@ describe("CurrencyApiFetcher", () => {
     });
 
     await expect(currencyApiFetcher.fetchData()).rejects.toThrow(
-      "Errore nel recupero dei dati.\nError: Formato dei dati non valido",
+      "Errore nel recupero dei dati\nError: Formato dei dati non valido\nError: Atteso number, ricevuto object",
     );
   });
 });

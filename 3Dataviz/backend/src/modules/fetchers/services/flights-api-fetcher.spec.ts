@@ -125,7 +125,7 @@ describe("FlightsApiFetcher", () => {
     );
 
     await expect(flightsApiFetcher.fetchData()).rejects.toThrow(
-      "Errore nel recupero dei dati.\nError: Network Error",
+      "Errore nel recupero dei dati\nError: Network Error",
     );
   });
 
@@ -138,7 +138,7 @@ describe("FlightsApiFetcher", () => {
     });
 
     await expect(flightsApiFetcher.fetchData()).rejects.toThrow(
-      "Errore nel recupero dei dati.\nError: Formato dei dati non valido",
+      "Errore nel recupero dei dati\nError: Formato dei dati non valido\nTypeError: data[airport.airportCode].filter is not a function",
     );
   });
 

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import { BaseFetcher } from "./base-fetcher";
 import axios from "axios";
 import { WEATHER_API_CONFIG } from "../config";
@@ -58,7 +58,9 @@ export class WeatherApiFetcher extends BaseFetcher {
       const dataset = this.transformData(data);
       return dataset;
     } catch (error) {
-      throw new Error("Errore nel recupero dei dati.\n" + error);
+      throw new ServiceUnavailableException(
+        `Errore nel recupero dei dati\n${error}`,
+      );
     }
   }
 
@@ -73,7 +75,7 @@ export class WeatherApiFetcher extends BaseFetcher {
       const hours = data[i].hourly.time;
       const values = data[i].hourly.temperature_2m;
       if (!hours || !values) {
-        throw new Error("Formato dei dati non valido");
+        throw new Error("Formato dei dati non valido\n");
       }
       for (let j = 0; j < hours.length; j++) {
         const entry: Entry = {

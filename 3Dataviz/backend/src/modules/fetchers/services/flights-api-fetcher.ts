@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import { BaseFetcher } from "./base-fetcher";
 import axios from "axios";
 import { FLIGHTS_API_CONFIG } from "../config";
@@ -62,7 +62,9 @@ export class FlightsApiFetcher extends BaseFetcher {
       const dataset = this.transformData(data);
       return dataset;
     } catch (error) {
-      throw new Error("Errore nel recupero dei dati.\n" + error);
+      throw new ServiceUnavailableException(
+        `Errore nel recupero dei dati\n${error}`,
+      );
     }
   }
 
@@ -120,7 +122,7 @@ export class FlightsApiFetcher extends BaseFetcher {
       };
       return dataset;
     } catch (error) {
-      throw new Error("Formato dei dati non valido.\n" + error);
+      throw new Error(`Formato dei dati non valido\n${error}`);
     }
   }
 }

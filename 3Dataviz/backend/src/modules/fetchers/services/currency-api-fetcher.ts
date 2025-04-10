@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import { BaseFetcher } from "./base-fetcher";
 import axios from "axios";
 import { CURRENCY_API_CONFIG } from "../config";
@@ -56,7 +56,9 @@ export class CurrencyApiFetcher extends BaseFetcher {
       const dataset = this.transformData(data);
       return dataset;
     } catch (error) {
-      throw new Error("Errore nel recupero dei dati.\n" + error);
+      throw new ServiceUnavailableException(
+        `Errore nel recupero dei dati\n${error}`,
+      );
     }
   }
 
@@ -83,7 +85,7 @@ export class CurrencyApiFetcher extends BaseFetcher {
           // Se il tasso di cambio non è disponibile, imposta a 0
           const value = data[xIndex].rates[currencyCode] ?? 0;
           if (typeof value !== "number") {
-            throw new Error(`Expected a number but received ${typeof value}`);
+            throw new Error(`Atteso number, ricevuto ${typeof value}`);
           }
           const entry: Entry = {
             id: xIndex * zLabels.length + zIndex,
@@ -102,7 +104,7 @@ export class CurrencyApiFetcher extends BaseFetcher {
       };
       return dataset;
     } catch (error) {
-      throw new Error("Formato dei dati non valido.\n" + error);
+      throw new Error(`Formato dei dati non valido\n${error}`);
     }
   }
 }
