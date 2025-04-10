@@ -66,26 +66,25 @@ const dataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(requestData.fulfilled, (state, action) => {
-        const data: Data[] = action.payload.data.map((data) => ({
-          id: data.id,
-          show: true,
-          y: data.y,
-          x: data.x,
-          z: data.z,
-        }));
+    builder.addCase(requestData.fulfilled, (state, action) => {
+      const data: Data[] = action.payload.data.map((data) => ({
+        id: data.id,
+        show: true,
+        y: data.y,
+        x: data.x,
+        z: data.z,
+      }));
 
-        state.data = data;
-        state.average =
-          state.data.reduce((a, b) => a + b.y, 0) / state.data.length;
-        state.legend = action.payload.legend;
-        state.x = action.payload.xLabels;
-        state.z = action.payload.zLabels;
-      })
-      // .addCase(requestData.rejected, (state, action) => {
-      //   //AppState error
-      // });
+      state.data = data;
+      state.average =
+        state.data.reduce((a, b) => a + b.y, 0) / state.data.length;
+      state.legend = action.payload.legend;
+      state.x = action.payload.xLabels;
+      state.z = action.payload.zLabels;
+    });
+    // .addCase(requestData.rejected, (state, action) => {
+    //   //AppState error
+    // });
   },
 });
 
