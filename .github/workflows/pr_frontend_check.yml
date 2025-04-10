@@ -42,6 +42,10 @@ jobs:
           fi
         working-directory: 3Dataviz/frontend
 
+      - name: Check coverage
+        run: npx vitest run --coverage
+        working-directory: 3Dataviz/frontend
+
       - name: Build
         run: npm run build
         working-directory: 3Dataviz/frontend

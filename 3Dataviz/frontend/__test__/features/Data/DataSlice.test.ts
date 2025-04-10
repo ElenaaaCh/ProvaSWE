@@ -10,8 +10,14 @@ import reducer, {
   filterAboveValue,
   filterAverage,
   reset,
+  selectorData,
+  selectorAverage,
+  selectorLegend,
+  selectorXLabels,
+  selectorZLabels,
 } from "../../../src/features/Data/DataSlice";
 import fetchMock from "fetch-mock";
+import { useSelector } from 'react-redux';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore<RootState, AppDispatch>(middlewares);
@@ -74,6 +80,29 @@ describe("DataSlice", () => {
   });
 
   it("Dataset selezionato e caricato con insuccesso", () => {
+    const errorStatus: number = 400;
+    const initialState: DataState = {
+      data: [],
+      legend: null,
+      average: 0,
+      z: [],
+      x: [],
+    };
+    fetchMock.mockGlobal().route("http://127.0.0.1:5000/api/1", errorStatus);
+
+    const store = mockStore(initialState);
+    return store.dispatch(requestData(1)).then(() => {
+      const actions = store.getActions();
+      expect(actions[0].type).toEqual("data/requestData/pending");
+      expect(actions[1].type).toEqual("data/requestData/rejected");
+      expect(actions[1].payload).toEqual(errorStatus);
+      expect(
+        reducer(initialState, { type: requestData.rejected.type }),
+      ).toEqual(initialState);
+    });
+  });
+
+  it("Dataset selezionato non esiste", () => {
     const errorStatus: number = 500;
     const initialState: DataState = {
       data: [],
@@ -82,10 +111,10 @@ describe("DataSlice", () => {
       z: [],
       x: [],
     };
-    fetchMock.mockGlobal().route("http://127.0.0.1:5000/api/1", 500);
+    fetchMock.mockGlobal().route("http://127.0.0.1:5000/api/-1", errorStatus);
 
     const store = mockStore(initialState);
-    return store.dispatch(requestData(1)).then(() => {
+    return store.dispatch(requestData(-1)).then(() => {
       const actions = store.getActions();
       expect(actions[0].type).toEqual("data/requestData/pending");
       expect(actions[1].type).toEqual("data/requestData/rejected");
@@ -300,4 +329,85 @@ describe("DataSlice", () => {
     expect(reducer(initialState, filterAverage(false))).toEqual(expectedState);
     expect(reducer(initialState, reset())).toEqual(initialState);
   });
+
+  it("Prendere i dati del dataset", () => {
+    const initialState: DataState = {
+      data: [
+        { id: 0, show: true, x: 0, y: 1, z: 0 },
+        { id: 1, show: true, x: 0, y: 2, z: 0 },
+        { id: 2, show: true, x: 0, y: 3, z: 0 },
+        { id: 3, show: true, x: 0, y: 4, z: 0 },
+      ],
+      legend: { x: "X", y: "Y", z: "Z" },
+      average: 2.5,
+      z: ["Label 1"],
+      x: ["Label 1"],
+    };
+    expect(selectorData({data:initialState})).toEqual(initialState.data);
+  });
+
+  it("Prendere la media globale del dataset", () => {
+    const initialState: DataState = {
+      data: [
+        { id: 0, show: true, x: 0, y: 1, z: 0 },
+        { id: 1, show: true, x: 0, y: 2, z: 0 },
+        { id: 2, show: true, x: 0, y: 3, z: 0 },
+        { id: 3, show: true, x: 0, y: 4, z: 0 },
+      ],
+      legend: { x: "X", y: "Y", z: "Z" },
+      average: 2.5,
+      z: ["Label 1"],
+      x: ["Label 1"],
+    };
+    expect(selectorAverage({data:initialState})).toEqual(initialState.average);
+  });
+
+  it("Prendere la legenda del dataset", () => {
+    const initialState: DataState = {
+      data: [
+        { id: 0, show: true, x: 0, y: 1, z: 0 },
+        { id: 1, show: true, x: 0, y: 2, z: 0 },
+        { id: 2, show: true, x: 0, y: 3, z: 0 },
+        { id: 3, show: true, x: 0, y: 4, z: 0 },
+      ],
+      legend: { x: "X", y: "Y", z: "Z" },
+      average: 2.5,
+      z: ["Label 1"],
+      x: ["Label 1"],
+    };
+    expect(selectorLegend({data:initialState})).toEqual(initialState.legend);
+  });
+
+  it("Prendere le etichette per l`asse X", () => {
+    const initialState: DataState = {
+      data: [
+        { id: 0, show: true, x: 0, y: 1, z: 0 },
+        { id: 1, show: true, x: 0, y: 2, z: 0 },
+        { id: 2, show: true, x: 0, y: 3, z: 0 },
+        { id: 3, show: true, x: 0, y: 4, z: 0 },
+      ],
+      legend: { x: "X", y: "Y", z: "Z" },
+      average: 2.5,
+      z: ["Label 1"],
+      x: ["Label 1"],
+    };
+    expect(selectorXLabels({data:initialState})).toEqual(initialState.x);
+  });
+
+  it("Prendere le etichette per l`asse Z", () => {
+    const initialState: DataState = {
+      data: [
+        { id: 0, show: true, x: 0, y: 1, z: 0 },
+        { id: 1, show: true, x: 0, y: 2, z: 0 },
+        { id: 2, show: true, x: 0, y: 3, z: 0 },
+        { id: 3, show: true, x: 0, y: 4, z: 0 },
+      ],
+      legend: { x: "X", y: "Y", z: "Z" },
+      average: 2.5,
+      z: ["Label 1"],
+      x: ["Label 1"],
+    };
+    expect(selectorZLabels({data:initialState})).toEqual(initialState.z);
+  });
+
 });
