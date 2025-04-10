@@ -112,7 +112,7 @@ describe("FlightsApiFetcher", () => {
         },
       ],
       legend: FLIGHTS_API_CONFIG.LEGEND,
-      xLabels: ["01/01/1970 01:00 - 01:59", "01/01/1970 02:00 - 02:59"],
+      xLabels: ["01/01/1970 00:00 - 00:59", "01/01/1970 01:00 - 01:59"],
       zLabels: ["Parigi", "Milano"],
     };
     expect(result).toEqual(expectedResult);
