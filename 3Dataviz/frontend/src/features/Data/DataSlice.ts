@@ -79,7 +79,7 @@ const dataSlice = createSlice({
 
         state.data = data;
         state.average =
-        state.data.reduce((a, b) => a + b.y, 0) / state.data.length;
+          state.data.reduce((a, b) => a + b.y, 0) / state.data.length;
         state.legend = action.payload.legend;
         state.x = action.payload.xLabels;
         state.z = action.payload.zLabels;
@@ -92,11 +92,11 @@ const dataSlice = createSlice({
 
 export const requestData = createAsyncThunk(
   "data/requestData",
-  async (datasetId: number,{ rejectWithValue }) => {
+  async (datasetId: number, { rejectWithValue }) => {
     try {
       const response = await fetchDataset(datasetId);
       return response;
-    } catch(e: unknown) {
+    } catch (e: unknown) {
       return rejectWithValue(e);
     }
   },
