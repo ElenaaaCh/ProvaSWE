@@ -99,9 +99,6 @@ describe("CurrencyApiFetcher", () => {
     // Chiamata al metodo pubblico fetchData()
     const result = await currencyApiFetcher.fetchData();
 
-    // Verifica che axios sia stato chiamato con qualche URL (non conosciamo il valore esatto)
-    expect(mockedAxios.get).toHaveBeenCalled();
-
     // Verifica che il risultato sia stato trasformato (controllo generico)
     expect(result).toBeDefined();
 

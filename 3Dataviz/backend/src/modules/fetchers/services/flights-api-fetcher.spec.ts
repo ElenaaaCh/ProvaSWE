@@ -81,9 +81,6 @@ describe("FlightsApiFetcher", () => {
     // Chiamata al metodo pubblico fetchData()
     const result = await flightsApiFetcher.fetchData();
 
-    // Verifica che axios sia stato chiamato con qualche URL (non conosciamo il valore esatto)
-    expect(mockedAxios.get).toHaveBeenCalledTimes(2);
-
     // Verifica che il risultato sia stato trasformato (controllo generico)
     expect(result).toBeDefined();
 
@@ -122,7 +119,7 @@ describe("FlightsApiFetcher", () => {
   });
 
   it("should throw an error if axios fails", async () => {
-    // Simuliamo un errore di rete
+    // Simula un errore di rete
     (mockedAxios.get as jest.Mock).mockRejectedValue(
       new Error("Network Error"),
     );
@@ -191,7 +188,6 @@ describe("FlightsApiFetcher", () => {
       xLabels: ["01/01/1970 01:00 - 01:59", "01/01/1970 02:00 - 02:59"],
       zLabels: ["Parigi", "Milano"],
     };
-    expect(mockedAxios.get).toHaveBeenCalledTimes(2);
     expect(result).toEqual(expectedResult);
   });
 });

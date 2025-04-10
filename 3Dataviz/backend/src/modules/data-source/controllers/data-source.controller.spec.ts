@@ -43,9 +43,9 @@ describe("DataSourceController", () => {
         description: "A data source",
       },
     ];
-    jest.spyOn(service, "getSources").mockReturnValue(result);
+    const spy = jest.spyOn(service, "getSources").mockReturnValue(result);
     const sources = controller.getSources();
+    expect(spy).toHaveBeenCalled();
     expect(sources).toEqual(result);
-    expect(service.getSources).toHaveBeenCalled();
   });
 });

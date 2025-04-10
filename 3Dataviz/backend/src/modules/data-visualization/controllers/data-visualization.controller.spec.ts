@@ -37,7 +37,13 @@ describe("DataVisualizationController", () => {
 
   it("should return a dataset", async () => {
     const dataset = await controller.getDataset(0);
-    expect(service.getDatasetById).toHaveBeenCalledWith(0);
     expect(dataset).toEqual(mockDataset);
+  });
+
+  it("should call getDatasetById with the correct id", async () => {
+    const id = 0;
+    const spy = jest.spyOn(service, "getDatasetById");
+    await controller.getDataset(id);
+    expect(spy).toHaveBeenCalledWith(id);
   });
 });

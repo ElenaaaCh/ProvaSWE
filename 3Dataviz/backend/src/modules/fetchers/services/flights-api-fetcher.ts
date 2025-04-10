@@ -9,6 +9,7 @@ import {
   FlightsData,
   FlightsRecord,
 } from "../interfaces/flights-data.interface";
+import { formatDate, formatTime } from "../../../common/utils/date-utils";
 
 @Injectable()
 export class FlightsApiFetcher extends BaseFetcher {
@@ -45,7 +46,6 @@ export class FlightsApiFetcher extends BaseFetcher {
     try {
       for (const airport of FLIGHTS_API_CONFIG.AIRPORTS) {
         const url = this.buildUrl(airport.airportCode);
-        console.log(url);
         const responseData = await axios
           .get<FlightsRecord[]>(url)
           .then((response): FlightsRecord[] => response.data)
@@ -80,19 +80,9 @@ export class FlightsApiFetcher extends BaseFetcher {
           startDate.getTime() +
             (FLIGHTS_API_CONFIG.INTERVAL_DURATION - 1) * 1000,
         );
-        const day = startDate.toLocaleDateString("it-IT", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        });
-        const startTime = startDate.toLocaleTimeString("it-IT", {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-        const endTime = endDate.toLocaleTimeString("it-IT", {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+        const day = formatDate(startDate);
+        const startTime = formatTime(startDate);
+        const endTime = formatTime(endDate);
         return `${day} ${startTime} - ${endTime}`;
       },
     );
