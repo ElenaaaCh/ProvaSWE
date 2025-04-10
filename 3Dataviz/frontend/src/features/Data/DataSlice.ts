@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { DataState } from "./interfaces/DataState";
 import { RootState } from "../../app/Store";
-import axios from "axios";
 import { FilterPayload } from "./interfaces/FilterPayload";
 import { Data } from "./interfaces/Data";
 import { Dataset } from "./types/Dataset";
+import { fetchDataset } from "./RequestHandler";
 
 const initialState: DataState = {
   data: [],
@@ -79,7 +79,7 @@ const dataSlice = createSlice({
 
         state.data = data;
         state.average =
-          state.data.reduce((a, b) => a + b.y, 0) / state.data.length;
+        state.data.reduce((a, b) => a + b.y, 0) / state.data.length;
         state.legend = action.payload.legend;
         state.x = action.payload.xLabels;
         state.z = action.payload.zLabels;
@@ -92,9 +92,13 @@ const dataSlice = createSlice({
 
 export const requestData = createAsyncThunk(
   "data/requestData",
-  async (datasetId: number) => {
-    const response = await axios.get("http://127.0.0.1:5000/api/" + datasetId);
-    return response.data as Dataset;
+  async (datasetId: number,{ rejectWithValue }) => {
+    try {
+      const response = await fetchDataset(datasetId);
+      return response;
+    } catch(e: unknown) {
+      return rejectWithValue(e);
+    }
   },
 );
 
