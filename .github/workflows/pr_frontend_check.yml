@@ -35,7 +35,7 @@ jobs:
 
       - name: Run tests
         run: |
-          if [ -n "$(find 3Dataviz/frontend -name '*.test.*' -print -quit)" ]; then
+          if [ -n "$(find . -name '*.test.*' -print -quit)" ]; then
             npm test
           else
             echo "No tests found, skipping."
