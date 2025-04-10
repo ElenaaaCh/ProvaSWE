@@ -3,7 +3,6 @@ import { DataState } from "./interfaces/DataState";
 import { RootState } from "../../app/Store";
 import { FilterPayload } from "./interfaces/FilterPayload";
 import { Data } from "./interfaces/Data";
-import { Dataset } from "./types/Dataset";
 import { fetchDataset } from "./RequestHandler";
 
 const initialState: DataState = {
@@ -84,9 +83,9 @@ const dataSlice = createSlice({
         state.x = action.payload.xLabels;
         state.z = action.payload.zLabels;
       })
-      .addCase(requestData.rejected, (state, action) => {
-        //AppState error
-      });
+      // .addCase(requestData.rejected, (state, action) => {
+      //   //AppState error
+      // });
   },
 });
 
