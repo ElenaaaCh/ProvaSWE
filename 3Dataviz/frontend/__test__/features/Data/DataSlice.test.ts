@@ -17,7 +17,7 @@ import reducer, {
   selectorZLabels,
 } from "../../../src/features/Data/DataSlice";
 import fetchMock from "fetch-mock";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
 
 const middlewares = [thunk];
 const mockStore = configureMockStore<RootState, AppDispatch>(middlewares);
@@ -343,7 +343,7 @@ describe("DataSlice", () => {
       z: ["Label 1"],
       x: ["Label 1"],
     };
-    expect(selectorData({data:initialState})).toEqual(initialState.data);
+    expect(selectorData({ data: initialState })).toEqual(initialState.data);
   });
 
   it("Prendere la media globale del dataset", () => {
@@ -359,7 +359,9 @@ describe("DataSlice", () => {
       z: ["Label 1"],
       x: ["Label 1"],
     };
-    expect(selectorAverage({data:initialState})).toEqual(initialState.average);
+    expect(selectorAverage({ data: initialState })).toEqual(
+      initialState.average,
+    );
   });
 
   it("Prendere la legenda del dataset", () => {
@@ -375,7 +377,7 @@ describe("DataSlice", () => {
       z: ["Label 1"],
       x: ["Label 1"],
     };
-    expect(selectorLegend({data:initialState})).toEqual(initialState.legend);
+    expect(selectorLegend({ data: initialState })).toEqual(initialState.legend);
   });
 
   it("Prendere le etichette per l`asse X", () => {
@@ -391,7 +393,7 @@ describe("DataSlice", () => {
       z: ["Label 1"],
       x: ["Label 1"],
     };
-    expect(selectorXLabels({data:initialState})).toEqual(initialState.x);
+    expect(selectorXLabels({ data: initialState })).toEqual(initialState.x);
   });
 
   it("Prendere le etichette per l`asse Z", () => {
@@ -407,7 +409,6 @@ describe("DataSlice", () => {
       z: ["Label 1"],
       x: ["Label 1"],
     };
-    expect(selectorZLabels({data:initialState})).toEqual(initialState.z);
+    expect(selectorZLabels({ data: initialState })).toEqual(initialState.z);
   });
-
 });

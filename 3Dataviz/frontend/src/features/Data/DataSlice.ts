@@ -77,7 +77,7 @@ const dataSlice = createSlice({
 
       state.data = data;
       state.average =
-      state.data.reduce((a, b) => a + b.y, 0) / state.data.length;
+        state.data.reduce((a, b) => a + b.y, 0) / state.data.length;
       state.legend = action.payload.legend;
       state.x = action.payload.xLabels;
       state.z = action.payload.zLabels;
